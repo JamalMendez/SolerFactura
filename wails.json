@@ -7,7 +7,7 @@
   "frontend:dev:watcher": "npm run dev",
   "frontend:dev:serverUrl": "auto",
   "author": {
-    "name": "Jamal Mendez",
-    "email": "jamalmendezfeliz@hotmail.com"
+    "name": "Jamal Mendez, Erick Feliz",
+    "email": "jamalmendezfeliz@hotmail.com, erickguarionexdev@gmail.com"
   }
 }
