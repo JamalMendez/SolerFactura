@@ -1,28 +1,27 @@
-import {useState} from 'react';
-import logo from './assets/images/logo-universal.png';
-import './App.css';
-import {Greet} from "../wailsjs/go/main/App";
+import '../src/styles/App.css'
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import Clientes from "./pages/Clientes";
+import Ncf from "./pages/Ncf";
+import Factura from "./pages/Factura";
+import Productos from "./pages/Productos";
+import Menu from "./components/Menu";
 
-function App() {
-    const [resultText, setResultText] = useState("Please enter your name below 👇");
-    const [name, setName] = useState('');
-    const updateName = (e) => setName(e.target.value);
-    const updateResultText = (result) => setResultText(result);
+export default function App(){
+    return(
+            <div className='container-app'>
+                <BrowserRouter>
+                <Menu />
 
-    function greet() {
-        Greet(name).then(updateResultText);
-    }
-
-    return (
-        <div id="App">
-            <img src={logo} id="logo" alt="logo"/>
-            <div id="result" className="result">{resultText}</div>
-            <div id="input" className="input-box">
-                <input id="name" className="input" onChange={updateName} autoComplete="off" name="input" type="text"/>
-                <button className="btn" onClick={greet}>Greet</button>
+                <div className='container-routes'>
+                    <Routes>
+                        <Route path="/" element={<Navigate to="/factura"/>} />
+                        <Route path="/factura" element={<Factura />} />
+                        <Route path="/ncf" element={<Ncf />} />
+                        <Route path="/clientes" element={<Clientes />} />
+                        <Route path="/productos" element={<Productos />} />
+                    </Routes>
+                </div>
+            </BrowserRouter>
             </div>
-        </div>
     )
 }
-
-export default App
