@@ -5,12 +5,13 @@
     width: fit-content;
     padding: 20px 15px 0 15px;
     background-color: var(--negro);
+    transition: .6s all;
     transform: translate(0);
 }
 
 .menu-disabled{
     transform: translate(-100%);
-    position: absolute;
+    display: none;
 }
 
 .menu-hamburguesa{
