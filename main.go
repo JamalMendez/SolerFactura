@@ -15,6 +15,8 @@ func main() {
 	// Create an instance of the app structure
 	app := NewApp()
 
+	Db()
+
 	// Create application with options
 	err := wails.Run(&options.App{
 		Title:  "Soler Fatura",
