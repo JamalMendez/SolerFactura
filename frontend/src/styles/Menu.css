@@ -1,0 +1,30 @@
+.nav-menu{
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: fit-content;
+    padding: 20px 15px 0 15px;
+    background-color: var(--negro);
+    transition: .6s all;
+    transform: translate(0);
+}
+
+.menu-disabled{
+    transform: translate(-100%);
+    display: none;
+}
+
+.menu-hamburguesa{
+    position: absolute;
+    width: 35px;
+    cursor: pointer;
+    margin: 0;
+    left: 15px;
+    top: 15px;
+    z-index: 1000;
+}
+
+.container-menu-element{
+    margin-top: 30px;
+    text-align: center;
+}

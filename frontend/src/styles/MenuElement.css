@@ -1,0 +1,19 @@
+.menu-element{
+    padding: 10px 0;
+    margin: 30px 0;;
+    color: white;
+    transition: .5s all;
+    cursor: pointer;
+}
+
+.nav-menu img{
+    margin-top: 35px;
+}
+
+.menu-active{
+    background-color: var(--verde-oscuro);
+}
+
+.menu-element:hover{
+    background-color: var(--verde-oscuro)
+}

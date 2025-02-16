@@ -1,0 +1,22 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Corbel';
+}
+
+:root{
+    --verde-oscuro: #18843A;
+    --verde-claro: #A0C020;
+    --negro: #1E1E1E;
+    --amarillo: #FFD800;
+}
+
+div.container-app{
+    display: flex;
+}
+
+div.container-routes{
+    margin-left: 65px;
+    margin-top: 30px;
+}
