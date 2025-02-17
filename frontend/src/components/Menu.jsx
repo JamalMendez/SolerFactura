@@ -21,7 +21,10 @@ export default function Menu(){
                 {/*MENU*/}
                 <nav className={`nav-menu ${!menuActive ? 'menu-disabled': ''}`}>
 
-                    <img width={'200px'} src="\images\R.electro solar logo (3).png" alt="Electro Solar Completo" />
+                    <img className='img-larga' width={'200px'} src="\images\R.electro solar logo (3).png" alt="Electro Solar Completo" />
+
+                    {/* PARA PANTALLAS PEQUEÑAS */}
+                    <img className='img-corta' style={{margin: '40px auto 0' }} width={'90px'} src="\images\Isotipo relectro solar.png" alt="Electro Solar Corto" />
 
                     <div className="container-menu-element">
                         {menusTitles.map((menu, i) => <MenuElement titulo={menu} key={i} active={active} setActive={setActive}/>)}

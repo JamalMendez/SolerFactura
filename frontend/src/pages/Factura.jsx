@@ -1,4 +1,4 @@
-import '../styles/Factura.css';
+import '../styles/factura.css';
 import Table from '../components/Table';
 import HeaderGroup from '../components/HeaderGroup';
 
