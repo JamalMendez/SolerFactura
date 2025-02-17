@@ -7,6 +7,14 @@
     background-color: var(--negro);
     transition: .6s all;
     transform: translate(0);
+    z-index: 1000;
+}
+
+@media (max-width: 700px){
+    .nav-menu{
+        position: absolute;
+        height: 100%;
+    }
 }
 
 .menu-disabled{
@@ -21,7 +29,7 @@
     margin: 0;
     left: 15px;
     top: 15px;
-    z-index: 1000;
+    z-index: 10000;
 }
 
 .container-menu-element{
