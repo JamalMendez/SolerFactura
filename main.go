@@ -6,18 +6,20 @@ import (
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
+
+	"ggstudios.com/solerfactura/dbconnection"
 )
 
 //go:embed all:frontend/dist
 var assets embed.FS
 
 func main() {
-	// Create an instance of the app structure
+	// // Create an instance of the app structure
 	app := NewApp()
 
-	Db()
+	dbconnection.DbOpen()
 
-	// Create application with options
+	//Create application with options
 	err := wails.Run(&options.App{
 		Title:  "Soler Fatura",
 		Width:  1024,
@@ -35,4 +37,6 @@ func main() {
 	if err != nil {
 		println("Error:", err.Error())
 	}
+
+	dbconnection.CloseDb()
 }

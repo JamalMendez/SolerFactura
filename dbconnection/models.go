@@ -1,4 +1,4 @@
-package main
+package dbconnection
 
 import (
 	"gorm.io/gorm"
