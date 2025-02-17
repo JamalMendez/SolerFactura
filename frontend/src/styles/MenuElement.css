@@ -6,8 +6,10 @@
     cursor: pointer;
 }
 
-.nav-menu img{
-    margin-top: 35px;
+@media (max-width: 700px){
+    .menu-element{
+        padding: 10px 25px;
+    }
 }
 
 .menu-active{
