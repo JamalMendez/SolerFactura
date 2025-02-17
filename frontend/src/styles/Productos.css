@@ -1,3 +1,21 @@
-.productos-container h1{
+.productos-container{
+    display: block;
+    width: 100%;
+}
+
+.productos-header h1{
     color: var(--verde-oscuro);
 }
+
+.productos-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 95%;
+    margin-bottom: 30px;
+}
+
+.productos-header .productos-options input{
+    margin-right: 15px;
+}
+
