@@ -1,11 +1,22 @@
 import '../styles/Clientes.css';
 import Table from '../components/Table';
 import HeaderGroup from '../components/HeaderGroup';
+import { Button } from '@mui/material';
+import Modal from '../components/Modal';
+import { useState } from 'react';
+import CamposProductos from '../components/CamposProductos';
 
 const columnas = ['Cedula', 'Nombre', 'E-mail', 'Direccion', 'Telefono'];
 const rows = []
 
 export default function Clientes(){
+
+    const [isModal, setIsModal] = useState(false);
+        const [isError, setIsError] = useState(false);
+    
+        function showModal(){
+            setIsModal(true)
+        }
     return(
         <div className="clientes-container">
 
@@ -13,13 +24,23 @@ export default function Clientes(){
                 <h1 className='clientes-title'>Clientes</h1>
 
                 {/* GRUPO HEADER */}
-                <HeaderGroup nombreBtn={'Clientes'} />
+                <HeaderGroup nombreBtn={'Clientes'} onShowModal={showModal}/>
             </header>  
 
             {/* TABLA */}
             <main>
                 <Table columnas={columnas} data={rows}/>
             </main>
+
+            {/* MODAL AGREGAR*/}
+            {isModal ?
+             <Modal setIsModal={setIsModal} modalNombre="Clientes">
+                <CamposProductos />
+                <Button style={{marginTop: '10px'}} variant='contained' color='success'>Agregar Clientes</Button>
+             </Modal>
+              :
+              ''
+            }
         </div>
     )
 }

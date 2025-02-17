@@ -1,7 +1,7 @@
 import { Button } from '@mui/material';
 import TextField from '@mui/material/TextField';
 
-export default function HeaderGroup({nombreBtn}){
+export default function HeaderGroup({nombreBtn, onShowModal}){
     return(
         <div className='header-group'>
             <TextField 
@@ -15,6 +15,7 @@ export default function HeaderGroup({nombreBtn}){
             size='medium'
             color='success'
             variant="contained"
+            onClick={onShowModal}
             >
             Agregar {nombreBtn}
             </Button>
