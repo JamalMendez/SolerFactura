@@ -1,4 +1,4 @@
-module SolerFatura
+module ggstudios.com/solerfactura
 
 go 1.22.0
 
