@@ -33,7 +33,7 @@ export default function ColumnGroupingTable({ columnas, data }) {
   ];
 
   const normalizedRows = data.map((row, index) => {
-    let newRow = { id: index + 1 }; //ID
+    let newRow = { id: index + 1 }; //ID GENERADO
     Object.keys(row).forEach(key => {
       const normalizedKey = normalizeKey(key);
       if (columnMap[normalizedKey]) {
@@ -109,7 +109,7 @@ export default function ColumnGroupingTable({ columnas, data }) {
                       </TableCell>
                     );
                   }
-                  const value = row[column.id] !== undefined ? row[column.id] : 'N/A'; // Muestra 'N/A' si el dato no existe
+                  const value = row[column.id] !== undefined ? row[column.id] : 'N/A';
                   return (
                     <TableCell key={column.id} align={column.align}>
                       {value}
