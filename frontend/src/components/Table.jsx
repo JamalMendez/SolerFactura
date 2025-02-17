@@ -11,18 +11,16 @@ import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 
-// Función para normalizar los nombres de las claves (para hacerlas coincidir con los nombres de columnas)
+// NORMALIZAR EL NOMBRE DE LAS COLUMNAS
 const normalizeKey = (str) =>
   str.toLowerCase().replace(/\s+/g, '').replace(/[^\w]/g, ''); 
 
 export default function ColumnGroupingTable({ columnas, data }) {
-  // Normalizamos los nombres de las columnas
   const columnMap = columnas.reduce((acc, col) => {
     acc[normalizeKey(col)] = col;
     return acc;
   }, {});
 
-  // Construimos las columnas con los nombres originales
   const columns = [
     { id: 'id', label: 'ID', minWidth: 50 },
     ...columnas.map(col => ({
@@ -34,9 +32,8 @@ export default function ColumnGroupingTable({ columnas, data }) {
     { id: 'acciones', label: 'Acciones', minWidth: 100, align: 'center' },
   ];
 
-  // Normalizamos los datos en `rows` y agregamos un ID autoincremental
   const normalizedRows = data.map((row, index) => {
-    let newRow = { id: index + 1 }; // Asignamos un ID autoincremental
+    let newRow = { id: index + 1 }; //ID
     Object.keys(row).forEach(key => {
       const normalizedKey = normalizeKey(key);
       if (columnMap[normalizedKey]) {
@@ -58,7 +55,7 @@ export default function ColumnGroupingTable({ columnas, data }) {
     setPage(0);
   };
 
-  // Funciones para manejar los botones
+  // MANEJAR LOS BOTONES
   const handleEditar = (id) => {
     console.log(`Editar fila con ID: ${id}`);
   };
