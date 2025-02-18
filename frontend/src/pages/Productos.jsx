@@ -14,6 +14,10 @@ export default function Productos(){
     const [isModal, setIsModal] = useState(false);
     const [isError, setIsError] = useState(false);
 
+    const [nombre, setNombre] = useState('');
+    const [costo, setCosto] = useState('');
+    const [tipoProducto, setTipoProducto] = useState('');
+
     function showModal(){
         setIsModal(true)
     }
@@ -39,7 +43,11 @@ export default function Productos(){
             {/* MODAL AGREGAR*/}
             {isModal ?
              <Modal setIsModal={setIsModal} modalNombre="Productos">
-                <CamposProductos />
+                <CamposProductos 
+                setNombre={setNombre}
+                setCosto={setCosto}
+                setTipoProducto={setTipoProducto}
+                />
                 <Button style={{marginTop: '10px'}} variant='contained' color='success'>Agregar Producto</Button>
              </Modal>
               :

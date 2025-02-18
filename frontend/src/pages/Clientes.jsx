@@ -12,11 +12,17 @@ const rows = []
 export default function Clientes(){
 
     const [isModal, setIsModal] = useState(false);
-        const [isError, setIsError] = useState(false);
+    const [isError, setIsError] = useState(false);
+
+    const [cedula, setCedula] = useState('');
+    const [nombre, setNombre] = useState('');
+    const [email, setEmail] = useState('');
+    const [direccion, setDireccion] = useState('');
+    const [telefono, setTelefono] = useState('');
     
-        function showModal(){
-            setIsModal(true)
-        }
+    function showModal(){
+        setIsModal(true)
+    }
     return(
         <div className="clientes-container">
 
@@ -35,7 +41,13 @@ export default function Clientes(){
             {/* MODAL AGREGAR*/}
             {isModal ?
              <Modal setIsModal={setIsModal} modalNombre="Clientes">
-                <CamposClientes />
+                <CamposClientes
+                setCedula={setCedula}
+                setNombre={setNombre}
+                setEmail={setEmail}
+                setDireccion={setDireccion}
+                setTelefono={setTelefono}
+                />
                 <Button style={{marginTop: '10px'}} variant='contained' color='success'>Agregar Clientes</Button>
              </Modal>
               :

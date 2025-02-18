@@ -13,6 +13,10 @@ export default function Factura(){
     const [isModal, setIsModal] = useState(false);
     const [isError, setIsError] = useState(false);
 
+    const [nombre, setNombre] = useState('');
+    const [descripcion, setDescripcion] = useState('');
+    const [FechaVencimiento, setFechaVencimiento] = useState('');
+
     function showModal(){
         setIsModal(true)
     }
@@ -32,7 +36,11 @@ export default function Factura(){
             {isModal ?
              <Modal setIsModal={setIsModal} modalNombre="Factura">
 
-                <CamposFactura />
+                <CamposFactura 
+                setNombre={setNombre}
+                setDescripcion={setDescripcion}
+                setFechaVencimiento={setFechaVencimiento}
+                />
                 <Button style={{marginTop: '10px'}} variant='contained' color='success'>Agregar Factura</Button>
 
              </Modal>

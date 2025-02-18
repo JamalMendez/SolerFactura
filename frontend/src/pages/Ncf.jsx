@@ -14,6 +14,11 @@ export default function Ncf(){
     const [isModal, setIsModal] = useState(false);
     const [isError, setIsError] = useState(false);
 
+    const [tipo, setTipo] = useState('');
+    const [secuencia, setSecuencia] = useState('');
+    const [serie, setSerie] = useState('');
+    const [fechaCreacion, setFechaCreacion] = useState('');
+
     function showModal(){
         setIsModal(true)
     }
@@ -36,7 +41,11 @@ export default function Ncf(){
             {/* MODAL AGREGAR*/}
             {isModal ?
              <Modal setIsModal={setIsModal} modalNombre="NCF">
-                <CamposNcf />
+                <CamposNcf 
+                setTipo={setTipo}
+                setSecuencia={setSecuencia}
+                setSerie={setSerie}
+                />
                 <Button style={{marginTop: '10px'}} variant='contained' color='success'>Agregar NCF</Button>
              </Modal>
               :
