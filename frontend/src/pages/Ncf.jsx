@@ -3,7 +3,7 @@ import Table from '../components/Table';
 import HeaderGroup from '../components/HeaderGroup';
 import Modal from '../components/Modal';
 import { useState } from 'react';
-import CamposProductos from '../components/CamposProductos';
+import CamposNcf from '../components/CamposNcf';
 import { Button } from '@mui/material';
 
 const columnas = ['Tipo', 'Secuencia', 'Serie', 'Fecha De Creacion'];
@@ -36,7 +36,7 @@ export default function Ncf(){
             {/* MODAL AGREGAR*/}
             {isModal ?
              <Modal setIsModal={setIsModal} modalNombre="NCF">
-                <CamposProductos />
+                <CamposNcf />
                 <Button style={{marginTop: '10px'}} variant='contained' color='success'>Agregar NCF</Button>
              </Modal>
               :

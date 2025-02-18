@@ -3,8 +3,8 @@ import Table from '../components/Table';
 import HeaderGroup from '../components/HeaderGroup';
 import  Modal from '../components/Modal';
 import {Button} from '@mui/material';
-import CamposProductos from '../components/CamposProductos';
 import { useState } from 'react';
+import CamposFactura from '../components/CamposFactura';
 
 const columnas = ['Nombre', 'Descripcion', 'Fecha Creacion', 'Fecha Vencimientos'];
 const rows = [];
@@ -32,7 +32,7 @@ export default function Factura(){
             {isModal ?
              <Modal setIsModal={setIsModal} modalNombre="Factura">
 
-                <CamposProductos />
+                <CamposFactura />
                 <Button style={{marginTop: '10px'}} variant='contained' color='success'>Agregar Factura</Button>
 
              </Modal>

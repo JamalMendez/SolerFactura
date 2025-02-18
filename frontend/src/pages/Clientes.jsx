@@ -4,7 +4,7 @@ import HeaderGroup from '../components/HeaderGroup';
 import { Button } from '@mui/material';
 import Modal from '../components/Modal';
 import { useState } from 'react';
-import CamposProductos from '../components/CamposProductos';
+import CamposClientes from '../components/CamposClientes';
 
 const columnas = ['Cedula', 'Nombre', 'E-mail', 'Direccion', 'Telefono'];
 const rows = []
@@ -35,7 +35,7 @@ export default function Clientes(){
             {/* MODAL AGREGAR*/}
             {isModal ?
              <Modal setIsModal={setIsModal} modalNombre="Clientes">
-                <CamposProductos />
+                <CamposClientes />
                 <Button style={{marginTop: '10px'}} variant='contained' color='success'>Agregar Clientes</Button>
              </Modal>
               :
