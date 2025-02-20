@@ -35,20 +35,6 @@ func GetAll() ([]dbconnection.TipoPago, error) {
 	return tipoPagos, nil
 }
 
-func GetActiveAll() ([]dbconnection.TipoPago, error) {
-	tipoPagos := make([]dbconnection.TipoPago, 0)
-
-	result := dbconnection.Db.Where("activo = ?", "1").Find(&tipoPagos)
-
-	if result.Error != nil {
-		return tipoPagos, result.Error
-	}
-
-	fmt.Println("Filas: ", result.RowsAffected)
-
-	return tipoPagos, nil
-}
-
 func GetById(id uint) (dbconnection.TipoPago, error) {
 	tipoPago := new(dbconnection.TipoPago)
 
@@ -64,47 +50,34 @@ func GetById(id uint) (dbconnection.TipoPago, error) {
 	return *tipoPago, nil
 }
 
-func GetActiveById(id uint) (dbconnection.TipoPago, error) {
+func Update(descripcion string, id uint) error {
 	tipoPago := new(dbconnection.TipoPago)
 
-	result := dbconnection.Db.Where("activo = ?", "1").Find(tipoPago, id)
+	result := dbconnection.Db.Find(tipoPago, id)
 
 	if result.Error != nil {
-		return *tipoPago, result.Error
+		return result.Error
 	}
 
-	fmt.Println("usuario: ", tipoPago.ID)
-	fmt.Println("Filas: ", result.RowsAffected)
-
-	return *tipoPago, nil
-}
-
-func Update(descripcion string, id uint) (dbconnection.TipoPago, error) {
-	tipoPago := new(dbconnection.TipoPago)
-
-	result := dbconnection.Db.Where("activo = ?", "1").Find(tipoPago, id)
-
-	if result.Error != nil {
-		return *tipoPago, result.Error
+	if descripcion != "" {
+		tipoPago.Descripcion = descripcion
 	}
 
-	tipoPago.Descripcion = descripcion
 	dbconnection.Db.Save(tipoPago)
 
-	return *tipoPago, nil
+	return nil
 }
 
-func Delete(id uint) (dbconnection.TipoPago, error) {
+func Delete(id uint) error {
 	tipoPago := new(dbconnection.TipoPago)
 
-	result := dbconnection.Db.Where("activo = ?", "1").Find(tipoPago, id)
+	result := dbconnection.Db.Find(tipoPago, id)
 
 	if result.Error != nil {
-		return *tipoPago, result.Error
+		return result.Error
 	}
 
-	tipoPago.Activo = false
-	dbconnection.Db.Save(tipoPago)
+	dbconnection.Db.Delete(tipoPago)
 
-	return *tipoPago, nil
+	return nil
 }

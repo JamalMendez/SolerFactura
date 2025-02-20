@@ -1,12 +1,19 @@
 package ncfcontroller
 
 import (
+	"errors"
 	"fmt"
+	"strings"
 
 	"ggstudios.com/solerfactura/dbconnection"
 )
 
 func Create(serie, tipo, secuencia string) error {
+
+	if err := dataValidation(&serie, &tipo, []string{secuencia}); err != nil {
+		return err
+	}
+
 	ncf := dbconnection.NCF{
 		Serie:     serie,
 		Tipo:      tipo,
@@ -27,6 +34,10 @@ func Create(serie, tipo, secuencia string) error {
 
 func CreateMany(serie, tipo string, secuencias []string) error {
 	ncfs := make([]dbconnection.NCF, 0)
+
+	if err := dataValidation(&serie, &tipo, secuencias); err != nil {
+		return err
+	}
 
 	for _, secuencia := range secuencias {
 
@@ -66,20 +77,6 @@ func GetAll() ([]dbconnection.NCF, error) {
 	return ncfs, nil
 }
 
-func GetActiveAll() ([]dbconnection.NCF, error) {
-	ncfs := make([]dbconnection.NCF, 0)
-
-	result := dbconnection.Db.Where("activo = ?", "1").Find(&ncfs)
-
-	if result.Error != nil {
-		return ncfs, result.Error
-	}
-
-	fmt.Println("Filas: ", result.RowsAffected)
-
-	return ncfs, nil
-}
-
 func GetById(id uint) (dbconnection.NCF, error) {
 	ncf := new(dbconnection.NCF)
 
@@ -95,28 +92,29 @@ func GetById(id uint) (dbconnection.NCF, error) {
 	return *ncf, nil
 }
 
-func GetActiveById(id uint) (dbconnection.NCF, error) {
+func Update(serie, tipo, secuencia string, id uint) error {
 	ncf := new(dbconnection.NCF)
 
-	result := dbconnection.Db.Where("activo = ?", "1").Find(ncf, id)
-
-	if result.Error != nil {
-		return *ncf, result.Error
+	if err := dataValidation(&serie, &tipo, []string{secuencia}); err != nil {
+		return err
 	}
 
-	fmt.Println("usuario: ", ncf.ID)
-	fmt.Println("Filas: ", result.RowsAffected)
-
-	return *ncf, nil
-}
-
-func Update(serie, tipo, secuencia string, id uint) (dbconnection.NCF, error) {
-	ncf := new(dbconnection.NCF)
-
-	result := dbconnection.Db.Where("activo = ?", "1").Find(ncf, id)
+	result := dbconnection.Db.Find(ncf, id)
 
 	if result.Error != nil {
-		return *ncf, result.Error
+		return result.Error
+	}
+
+	if serie == "" {
+		serie = ncf.Serie
+	}
+
+	if tipo == "" {
+		tipo = ncf.Tipo
+	}
+
+	if secuencia == "" {
+		secuencia = ncf.Secuencia
 	}
 
 	ncf.Serie = serie
@@ -124,20 +122,35 @@ func Update(serie, tipo, secuencia string, id uint) (dbconnection.NCF, error) {
 	ncf.Secuencia = secuencia
 	dbconnection.Db.Save(ncf)
 
-	return *ncf, nil
+	return nil
 }
 
-func Delete(id uint) (dbconnection.NCF, error) {
+func Delete(id uint) error {
 	ncf := new(dbconnection.NCF)
 
-	result := dbconnection.Db.Where("activo = ?", "1").Find(ncf, id)
+	result := dbconnection.Db.Find(ncf, id)
 
 	if result.Error != nil {
-		return *ncf, result.Error
+		return result.Error
 	}
 
-	ncf.Activo = false
-	dbconnection.Db.Save(ncf)
+	dbconnection.Db.Delete(ncf)
 
-	return *ncf, nil
+	return nil
+}
+
+func dataValidation(serie, tipo *string, secuencia []string) error {
+	*serie = strings.ToUpper(*serie)
+
+	if len(*tipo) != 2 {
+		return errors.New("solo se pueden ingresar 2 digitos en el tipo")
+	}
+
+	for _, v := range secuencia {
+		if len(v) != 8 {
+			return errors.New("solo se pueden ingresar 8 digitos en la secuencia")
+		}
+	}
+
+	return nil
 }

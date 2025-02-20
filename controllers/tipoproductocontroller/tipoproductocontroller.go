@@ -35,20 +35,6 @@ func GetAll() ([]dbconnection.TipoProducto, error) {
 	return tipoProductos, nil
 }
 
-func GetActiveAll() ([]dbconnection.TipoProducto, error) {
-	tipoProductos := make([]dbconnection.TipoProducto, 0)
-
-	result := dbconnection.Db.Where("activo = ?", "1").Find(&tipoProductos)
-
-	if result.Error != nil {
-		return tipoProductos, result.Error
-	}
-
-	fmt.Println("Filas: ", result.RowsAffected)
-
-	return tipoProductos, nil
-}
-
 func GetById(id uint) (dbconnection.TipoProducto, error) {
 	tipoProducto := new(dbconnection.TipoProducto)
 
@@ -64,47 +50,42 @@ func GetById(id uint) (dbconnection.TipoProducto, error) {
 	return *tipoProducto, nil
 }
 
-func GetActiveById(id uint) (dbconnection.TipoProducto, error) {
+func Update(descripcion string, id uint) error {
 	tipoProducto := new(dbconnection.TipoProducto)
 
-	result := dbconnection.Db.Where("activo = ?", "1").Find(tipoProducto, id)
+	result := dbconnection.Db.Find(tipoProducto, id)
 
 	if result.Error != nil {
-		return *tipoProducto, result.Error
+		return result.Error
 	}
 
-	fmt.Println("usuario: ", tipoProducto.ID)
-	fmt.Println("Filas: ", result.RowsAffected)
+	if descripcion != "" {
+		tipoProducto.Descripcion = descripcion
+	}
 
-	return *tipoProducto, nil
+	result = dbconnection.Db.Save(tipoProducto)
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
 }
 
-func Update(descripcion string, id uint) (dbconnection.TipoProducto, error) {
+func Delete(id uint) error {
 	tipoProducto := new(dbconnection.TipoProducto)
 
-	result := dbconnection.Db.Where("activo = ?", "1").Find(tipoProducto, id)
+	result := dbconnection.Db.Find(tipoProducto, id)
 
 	if result.Error != nil {
-		return *tipoProducto, result.Error
+		return result.Error
 	}
 
-	tipoProducto.Descripcion = descripcion
-	dbconnection.Db.Save(tipoProducto)
-
-	return *tipoProducto, nil
-}
-
-func Delete(id uint) (dbconnection.TipoProducto, error) {
-	tipoProducto := new(dbconnection.TipoProducto)
-
-	result := dbconnection.Db.Where("activo = ?", "1").Find(tipoProducto, id)
+	result = dbconnection.Db.Delete(tipoProducto)
 
 	if result.Error != nil {
-		return *tipoProducto, result.Error
+		return result.Error
 	}
 
-	tipoProducto.Activo = false
-	dbconnection.Db.Save(tipoProducto)
-
-	return *tipoProducto, nil
+	return nil
 }

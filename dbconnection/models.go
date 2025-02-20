@@ -7,14 +7,12 @@ import (
 type TipoPago struct {
 	gorm.Model
 	Descripcion string    `gorm:"unique;not null;size:100"`
-	Activo      bool      `gorm:"default:true;not null"`
 	Facturas    []Factura `gorm:"foreignKey:TPO_id"`
 }
 
 type TipoProducto struct {
 	gorm.Model
 	Descripcion string     `gorm:"unique;not null;size:100"`
-	Activo      bool       `gorm:"default:true;not null"`
 	Productos   []Producto `gorm:"foreignKey:TPR_id"`
 }
 
@@ -23,7 +21,6 @@ type NCF struct {
 	Tipo      string    `gorm:"not null;size:2"`
 	Secuencia string    `gorm:"unique;not null;size:8"`
 	Serie     string    `gorm:"type:CHAR(1) NOT NULL"`
-	Activo    bool      `gorm:"default:true;not null"`
 	Facturas  []Factura `gorm:"foreignKey:NCF_id"`
 }
 
@@ -36,7 +33,6 @@ type Cliente struct {
 	Direccion  string    `gorm:"size:200"`
 	Telefono   string    `gorm:"unique;size:10"`
 	Celular    string    `gorm:"unique;size:10"`
-	Activo     bool      `gorm:"default:true;not null"`
 	Facturas   []Factura `gorm:"foreignKey:CLI_id"`
 }
 
@@ -44,7 +40,6 @@ type Producto struct {
 	gorm.Model
 	TPR_id uint    `gorm:"not null"`
 	Costo  float32 `gorm:"not null"`
-	Activo bool    `gorm:"default:true;not null"`
 }
 
 type Factura struct {
@@ -58,7 +53,6 @@ type Factura struct {
 	ITBIS         float32 `gorm:"not null"`
 	Envio         float32
 	Descripcion   string     `gorm:"type:text"`
-	Activo        bool       `gorm:"default:true;not null"`
 	Productos     []Producto `gorm:"many2many:factura_descs"`
 }
 
