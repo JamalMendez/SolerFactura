@@ -6,10 +6,7 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import TableHead from "@mui/material/TableHead";
-import Button from "@mui/material/Button";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
+import ActionButtons from "./ActionButtons";
 
 // NORMALIZAR EL NOMBRE DE LAS COLUMNAS
 const normalizeKey = (str) =>
@@ -19,11 +16,8 @@ export default function ColumnGroupingTable({
   columnas,
   data,
   setIsModalConfirmacion,
+  onShowModal
 }) {
-  const columnMap = columnas.reduce((acc, col) => {
-    acc[normalizeKey(col)] = col;
-    return acc;
-  }, {});
 
   const columns = [
     ...columnas.map((col, i) => ({
@@ -45,10 +39,6 @@ export default function ColumnGroupingTable({
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
-  };
-
-  const handleEditar = (index) => {
-    console.log(`Editar fila en índice: ${index}`);
   };
 
   return (
@@ -80,34 +70,16 @@ export default function ColumnGroupingTable({
                     if (column.id === "acciones") {
                       return (
                         <TableCell key={column.id} align={column.align}>
-                          <Button
-                            variant="contained"
-                            color="warning"
-                            size="small"
-                            onClick={() => handleEditar(index)}
-                            startIcon={<EditIcon />}
-                            style={{ marginRight: "5px", paddingRight: 0 }}
-                          />
-                          <Button
-                            variant="contained"
-                            color="error"
-                            size="small"
-                            onClick={() =>
-                              setIsModalConfirmacion({
-                                active: true,
-                                id: row.id,
-                              })
-                            }
-                            startIcon={<DeleteIcon />}
-                            style={{ paddingRight: 0 }}
-                          />
+
+                          {/* EDITAR Y ELIMINAR BUTTONS */}
+                          <ActionButtons index={index} row={row} onShowModal={onShowModal} setIsModalConfirmacion={setIsModalConfirmacion}/>
                         </TableCell>
                       );
                     }
                     const value =
                       row[column.id] !== undefined ? row[column.id] : "N/A";
                     return (
-                      <TableCell key={column.id} align={column.align}>
+                      <TableCell style={{whiteSpace: "nowrap",overflow: "hidden", textOverflow: 'ellipsis', maxWidth: '45px'}} key={column.id} align={column.align}>
                         {value}
                       </TableCell>
                     );

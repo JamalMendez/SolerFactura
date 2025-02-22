@@ -7,6 +7,7 @@ import { useState } from "react";
 import Alert from "@mui/joy/Alert";
 import CamposFactura from "../components/CamposFactura";
 import ModalConfirmacion from "../components/ModalConfirmacion";
+import useModal from "../hooks/UseModal";
 
 const columnas = [
   "ID",
@@ -17,62 +18,99 @@ const columnas = [
 ];
 
 const date = new Date();
-const day = date.getDate();
-const month = date.getMonth() + 1;
+const day = String(date.getDate()).padStart(2, "0");
+const month = String(date.getMonth() + 1).padStart(2, "0");
 const year = date.getFullYear();
 
 const fechaCreacion = `${year}-${month}-${day}`;
 
 export default function Factura() {
   const [isModal, setIsModal] = useState(false);
-  const [isModalConfirmacion, setIsModalConfirmacion] = useState({
-    active: false,
-    id: null,
-  });
-
-  const [isError, setIsError] = useState(false);
-  const [mensajeAlerta, setMensajeAlerta] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
   const [id, setId] = useState(1);
+  const [idSeleccionado, setIdSeleccionado] = useState(null);
 
   const [rows, setRows] = useState([]);
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [fechaVencimiento, setFechaVencimiento] = useState("");
 
-  function showModal() {
+  const [
+    isError,
+    setIsError,
+    mensajeAlerta,
+    setMensajeAlerta,
+    isModalConfirmacion,
+    setIsModalConfirmacion,
+    cancelarEliminacion
+  ] = useModal();
+
+  function showModal(id) {
+    setNombre("");
+    setDescripcion("");
+    setFechaVencimiento("");
     setIsModal(true);
+    setIsEditing(false);
+
+    if (typeof id === "number" && !isNaN(id)) {
+      setIdSeleccionado(id);
+      setIsEditing(true);
+      editarFila(id);
+    }
   }
 
   function validarInformacion() {
     if ([nombre, descripcion, fechaVencimiento].includes("")) {
       setMensajeAlerta("Campos no pueden ir vacios");
       setIsError(true);
-
-      //DEVOLVER A LA NORMALIDAD
-      setTimeout(() => {
-        setMensajeAlerta("");
-        setIsError(false);
-      }, 3000);
       return;
     }
 
-    {
-      /*CERRAR MODAL Y LLENAR FILA*/
-    }
     setIsModal(false);
     setNombre("");
     setDescripcion("");
     setFechaVencimiento("");
 
-    setRows((rows) => [
-      { id: id, nombre, descripcion, fechaCreacion, fechaVencimiento },
-      ...rows,
-    ]);
-    setId((id) => id + 1);
+    if (!isEditing) {
+      setRows((rows) => [
+        {
+          id,
+          nombre,
+          descripcion,
+          fechacreacion: fechaCreacion,
+          fechavencimiento: fechaVencimiento,
+        },
+        ...rows,
+      ]);
+      setId((id) => id + 1);
+    } else {
+      setRows((rows) =>
+        rows.map((row, i) =>
+          i === idSeleccionado
+            ? {
+                ...row,
+                nombre,
+                descripcion,
+                fechavencimiento: fechaVencimiento,
+              }
+            : row
+        )
+      );
+      setIsEditing(false);
+    }
   }
 
-  function eliminarElemento(index) {
-    setRows(rows.filter((e, i) => e.id !== index));
+  function eliminarElemento(id) {
+    setRows((rows) => rows.filter((row) => row.id !== id));
+  }
+
+  function editarFila(id) {
+    const fila = rows.find((row, i) => i === id);
+    if (fila) {
+      setNombre(fila.nombre);
+      setDescripcion(fila.descripcion);
+      setFechaVencimiento(fila.fechavencimiento);
+    }
   }
 
   return (
@@ -86,48 +124,47 @@ export default function Factura() {
         <Table
           columnas={columnas}
           data={rows}
-          onEliminarElemento={eliminarElemento}
           setIsModalConfirmacion={setIsModalConfirmacion}
+          onShowModal={showModal}
         />
       </main>
 
       {/* MODAL AGREGAR*/}
-      {isModal ? (
+      {isModal && (
         <Modal setIsModal={setIsModal} modalNombre="Factura">
-          {mensajeAlerta ? (
+          {mensajeAlerta && (
             <div>
               <Alert color="danger">{mensajeAlerta}</Alert>
             </div>
-          ) : (
-            ""
           )}
 
           <CamposFactura
+            nombre={nombre}
             setNombre={setNombre}
+            descripcion={descripcion}
             setDescripcion={setDescripcion}
+            fechaVencimiento={fechaVencimiento}
             setFechaVencimiento={setFechaVencimiento}
           />
           <Button
-            style={{ marginTop: "10px" }}
+            className="factura-button"
             variant="contained"
-            color="success"
+            color={isEditing ? "warning": "success"}
             onClick={validarInformacion}
           >
-            Agregar Factura
+            {isEditing ? "Editar Factura" : "Agregar Factura"}
           </Button>
         </Modal>
-      ) : (
-        ""
       )}
 
-      {isModalConfirmacion.active ? (
+      {/*MODAL CONFIRMACION DE ELIMINAR */}
+      {isModalConfirmacion.active && (
         <ModalConfirmacion
           onEliminarElemento={eliminarElemento}
           setIsModalConfirmacion={setIsModalConfirmacion}
           id={isModalConfirmacion.id}
+          onCancelar={cancelarEliminacion}
         />
-      ) : (
-        ""
       )}
     </div>
   );

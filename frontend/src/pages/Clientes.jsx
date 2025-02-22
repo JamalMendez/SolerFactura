@@ -1,61 +1,180 @@
 import "../styles/Clientes.css";
 import Table from "../components/Table";
 import HeaderGroup from "../components/HeaderGroup";
-import { Button } from "@mui/material";
 import Modal from "../components/Modal";
+import { Button } from "@mui/material";
 import { useState } from "react";
+import Alert from "@mui/joy/Alert";
 import CamposClientes from "../components/CamposClientes";
+import ModalConfirmacion from "../components/ModalConfirmacion";
+import useModal from "../hooks/UseModal";
 
-const columnas = ["Cedula", "Nombre", "E-mail", "Direccion", "Telefono"];
-const rows = [];
+const columnas = ["Cedula", "Nombre", "E-mail", "Direccion", "Telefono", "Numero"];
 
 export default function Clientes() {
   const [isModal, setIsModal] = useState(false);
-  const [isError, setIsError] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [id, setId] = useState(1);
+  const [idSeleccionado, setIdSeleccionado] = useState(null);
 
+  const [rows, setRows] = useState([]);
   const [cedula, setCedula] = useState("");
   const [nombre, setNombre] = useState("");
   const [email, setEmail] = useState("");
   const [direccion, setDireccion] = useState("");
   const [telefono, setTelefono] = useState("");
+  const [celular, setCelular] = useState("");
 
-  function showModal() {
+  const [
+    isError,
+    setIsError,
+    mensajeAlerta,
+    setMensajeAlerta,
+    isModalConfirmacion,
+    setIsModalConfirmacion,
+    cancelarEliminacion
+  ] = useModal();
+
+  function showModal(id) {
+    setCedula("");
+    setNombre("");
+    setEmail("");
+    setDireccion("");
+    setTelefono("");
+    setCelular("");
     setIsModal(true);
+    setIsEditing(false);
+
+    if (typeof id === "number" && !isNaN(id)) {
+      setIdSeleccionado(id);
+      setIsEditing(true);
+      editarFila(id);
+    }
   }
+
+  function validarInformacion() {
+    if ([cedula, nombre, email, direccion, telefono, celular].includes("")) {
+      setMensajeAlerta("Campos no pueden ir vacios");
+      setIsError(true);
+      return;
+    }
+
+    setIsModal(false);
+    setCedula("");
+    setNombre("");
+    setEmail("");
+    setDireccion("");
+    setTelefono("");
+    setCelular("");
+
+    if (!isEditing) {
+      setRows((rows) => [
+        {
+          id,
+          cedula,
+          nombre,
+          email,
+          direccion,
+          telefono,
+          celular,
+        },
+        ...rows,
+      ]);
+      setId((id) => id + 1);
+    } else {
+      setRows((rows) =>
+        rows.map((row, i) =>
+          i === idSeleccionado
+            ? {
+                ...row,
+                cedula,
+                nombre,
+                email,
+                direccion,
+                telefono,
+                celular,
+              }
+            : row
+        )
+      );
+      setIsEditing(false);
+    }
+  }
+
+  function eliminarElemento(id) {
+    setRows((rows) => rows.filter((row) => row.id !== id));
+  }
+
+  function editarFila(id) {
+    const fila = rows.find((row, i) => i === id);
+    if (fila) {
+      setCedula(fila.cedula);
+      setNombre(fila.nombre);
+      setEmail(fila.email);
+      setDireccion(fila.direccion);
+      setTelefono(fila.telefono);
+      setCelular(fila.celular);
+    }
+  }
+
   return (
     <div className="clientes-container">
       <header className="clientes-header">
         <h1 className="clientes-title">Clientes</h1>
-
-        {/* GRUPO HEADER */}
         <HeaderGroup nombreBtn={"Clientes"} onShowModal={showModal} />
       </header>
 
-      {/* TABLA */}
       <main>
-        <Table columnas={columnas} data={rows} />
+        <Table
+          columnas={columnas}
+          data={rows}
+          setIsModalConfirmacion={setIsModalConfirmacion}
+          onShowModal={showModal}
+        />
       </main>
 
       {/* MODAL AGREGAR*/}
-      {isModal ? (
+      {isModal && (
         <Modal setIsModal={setIsModal} modalNombre="Clientes">
+          {mensajeAlerta && (
+            <div>
+              <Alert color="danger">{mensajeAlerta}</Alert>
+            </div>
+          )}
+
           <CamposClientes
+            cedula={cedula}
             setCedula={setCedula}
+            nombre={nombre}
             setNombre={setNombre}
+            email={email}
             setEmail={setEmail}
+            direccion={direccion}
             setDireccion={setDireccion}
+            telefono={telefono}
             setTelefono={setTelefono}
+            celular={celular}
+            setCelular={setCelular}
           />
           <Button
-            style={{ marginTop: "10px" }}
+            className="clientes-button"
             variant="contained"
-            color="success"
+            color={isEditing ? "warning" : "success"}
+            onClick={validarInformacion}
           >
-            Agregar Clientes
+            {isEditing ? "Editar Cliente" : "Agregar Cliente"}
           </Button>
         </Modal>
-      ) : (
-        ""
+      )}
+
+      {/*MODAL CONFIRMACION DE ELIMINAR */}
+      {isModalConfirmacion.active && (
+        <ModalConfirmacion
+          onEliminarElemento={eliminarElemento}
+          setIsModalConfirmacion={setIsModalConfirmacion}
+          id={isModalConfirmacion.id}
+          onCancelar={cancelarEliminacion}
+        />
       )}
     </div>
   );

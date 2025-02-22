@@ -8,20 +8,25 @@ const month = String(date.getMonth() + 1).padStart(2, "0");
 const day = String(date.getDate()).padStart(2, "0");
 
 export default function CamposFactura({
+  nombre,
   setNombre,
+  descripcion,
   setDescripcion,
-  setFechaVencimiento,
+  fechaVencimiento,
+  setFechaVencimiento
 }) {
   return (
     <div className="textfields-container">
       <TextField
         label="Nombre"
         type="text"
+        value={nombre}
         onChange={(e) => setNombre(e.target.value)}
       />
 
       <Textarea
         placeholder="Descripcion"
+        value={descripcion}
         minRows={2}
         maxRows={4}
         onChange={(e) => setDescripcion(e.target.value)}
@@ -31,6 +36,7 @@ export default function CamposFactura({
 
       <TextField
         type="date"
+        value={fechaVencimiento}
         onChange={(e) => setFechaVencimiento(e.target.value)}
       />
     </div>

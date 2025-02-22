@@ -4,55 +4,153 @@ import HeaderGroup from "../components/HeaderGroup";
 import Modal from "../components/Modal";
 import { useState } from "react";
 import { Button } from "@mui/material";
+import Alert from "@mui/joy/Alert";
 import CamposProductos from "../components/CamposProductos";
+import ModalConfirmacion from "../components/ModalConfirmacion";
+import useModal from "../hooks/UseModal";
 
-const columnas = ["Nombre", "Costo", "Tipo de producto"];
-const rows = [];
+const columnas = ["ID", "Nombre", "Costo", "Tipo de producto"];
 
 export default function Productos() {
   const [isModal, setIsModal] = useState(false);
-  const [isError, setIsError] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [id, setId] = useState(1);
+  const [idSeleccionado, setIdSeleccionado] = useState(null);
 
+  const [rows, setRows] = useState([]);
   const [nombre, setNombre] = useState("");
   const [costo, setCosto] = useState("");
   const [tipoProducto, setTipoProducto] = useState("");
 
-  function showModal() {
+  const [
+    isError,
+    setIsError,
+    mensajeAlerta,
+    setMensajeAlerta,
+    isModalConfirmacion,
+    setIsModalConfirmacion,
+    cancelarEliminacion,
+  ] = useModal();
+
+  function showModal(id) {
+    setNombre("");
+    setCosto("");
+    setTipoProducto("");
     setIsModal(true);
+    setIsEditing(false);
+
+    if (typeof id === "number" && !isNaN(id)) {
+      setIdSeleccionado(id);
+      setIsEditing(true);
+      editarFila(id);
+    }
+  }
+
+  function validarInformacion() {
+    if ([nombre, costo, tipoProducto].includes("")) {
+      setMensajeAlerta("Campos no pueden ir vacíos");
+      setIsError(true);
+      return;
+    }
+
+    setIsModal(false);
+    setNombre("");
+    setCosto("");
+    setTipoProducto("");
+
+    if (!isEditing) {
+      setRows((rows) => [
+        {
+          id,
+          nombre,
+          costo,
+          tipoProducto,
+        },
+        ...rows,
+      ]);
+      setId((id) => id + 1);
+    } else {
+      setRows((rows) =>
+        rows.map((row, i) =>
+          i === idSeleccionado
+            ? {
+                ...row,
+                nombre,
+                costo,
+                tipoProducto,
+              }
+            : row
+        )
+      );
+      setIsEditing(false);
+    }
+  }
+
+  function eliminarElemento(id) {
+    setRows((rows) => rows.filter((row) => row.id !== id));
+  }
+
+  function editarFila(id) {
+    const fila = rows.find((row, i) => i === id);
+    if (fila) {
+      setNombre(fila.nombre);
+      setCosto(fila.costo);
+      setTipoProducto(fila.tipoProducto);
+    }
   }
 
   return (
     <div className="productos-container">
       <header className="productos-header">
         <h1 className="productos-title">Productos</h1>
-
-        {/* GRUPO HEADER */}
         <HeaderGroup nombreBtn={"Productos"} onShowModal={showModal} />
       </header>
 
-      {/* TABLA */}
       <main>
-        <Table columnas={columnas} data={rows} />
+        <Table
+          columnas={columnas}
+          data={rows}
+          setIsModalConfirmacion={setIsModalConfirmacion}
+          onShowModal={showModal}
+        />
       </main>
 
       {/* MODAL AGREGAR*/}
-      {isModal ? (
+      {isModal && (
         <Modal setIsModal={setIsModal} modalNombre="Productos">
+          {mensajeAlerta && (
+            <div>
+              <Alert color="danger">{mensajeAlerta}</Alert>
+            </div>
+          )}
+
           <CamposProductos
+            nombre={nombre}
             setNombre={setNombre}
+            costo={costo}
             setCosto={setCosto}
+            tipoProducto={tipoProducto}
             setTipoProducto={setTipoProducto}
           />
           <Button
-            style={{ marginTop: "10px" }}
+            className="productos-button"
             variant="contained"
-            color="success"
+            color={isEditing ? "warning" : "success"}
+            onClick={validarInformacion}
           >
-            Agregar Producto
+            {isEditing ? "Editar Producto" : "Agregar Producto"}
           </Button>
         </Modal>
-      ) : (
-        ""
+      )}
+
+      {/*MODAL CONFIRMACION DE ELIMINAR */}
+      {isModalConfirmacion.active && (
+        <ModalConfirmacion
+          onEliminarElemento={eliminarElemento}
+          setIsModalConfirmacion={setIsModalConfirmacion}
+          id={isModalConfirmacion.id}
+          onCancelar={cancelarEliminacion}
+        />
       )}
     </div>
   );
