@@ -18,6 +18,8 @@ export default function Clientes() {
   const [idSeleccionado, setIdSeleccionado] = useState(null);
 
   const [rows, setRows] = useState([]);
+  const [palabraFiltro, setPalabraFiltro] = useState(''); 
+  const [busqueda, setBusqueda] = useState([]); 
   const [cedula, setCedula] = useState("");
   const [nombre, setNombre] = useState("");
   const [email, setEmail] = useState("");
@@ -117,20 +119,38 @@ export default function Clientes() {
     }
   }
 
+  function filtrarTabla(palabraBusqueda) {
+    setPalabraFiltro(palabraBusqueda); 
+
+    if (palabraBusqueda === '') {
+      setBusqueda([]);
+    } else {
+      const filtro = rows.filter(row =>
+        Object.values(row).some(elemento =>
+          String(elemento).toLowerCase().includes(palabraBusqueda.toLowerCase())
+        )
+      );
+      setBusqueda(filtro); 
+    }
+  }
+
   return (
     <div className="clientes-container">
       <header className="clientes-header">
         <h1 className="clientes-title">Clientes</h1>
-        <HeaderGroup nombreBtn={"Clientes"} onShowModal={showModal} />
+        <HeaderGroup onFiltrarTabla={filtrarTabla} nombreBtn={"Clientes"} onShowModal={showModal} />
       </header>
 
       <main>
         <Table
           columnas={columnas}
-          data={rows}
+          data={palabraFiltro.length > 0 ? busqueda : rows} 
           setIsModalConfirmacion={setIsModalConfirmacion}
           onShowModal={showModal}
         />
+        {busqueda.length === 0 && palabraFiltro.length > 0 ? (
+          <h1 style={{ textAlign: 'center', marginTop: '30px' }}>No hay datos de búsqueda</h1>
+        ) : ''}
       </main>
 
       {/* MODAL AGREGAR*/}

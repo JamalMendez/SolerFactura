@@ -1,7 +1,7 @@
 import { Button } from "@mui/material";
 import TextField from "@mui/material/TextField";
 
-export default function HeaderGroup({ nombreBtn, onShowModal }) {
+export default function HeaderGroup({ onFiltrarTabla, nombreBtn, onShowModal }) {
   return (
     <div className="header-group">
       <TextField
@@ -9,6 +9,7 @@ export default function HeaderGroup({ nombreBtn, onShowModal }) {
         rows={1}
         size="small"
         style={{ marginRight: "15px" }}
+        onChange={e => onFiltrarTabla(e.target.value)}
       />
 
       <Button

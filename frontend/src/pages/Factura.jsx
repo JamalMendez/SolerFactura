@@ -31,6 +31,8 @@ export default function Factura() {
   const [idSeleccionado, setIdSeleccionado] = useState(null);
 
   const [rows, setRows] = useState([]);
+  const [palabraFiltro, setPalabraFiltro] = useState(''); 
+  const [busqueda, setBusqueda] = useState([]); 
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [fechaVencimiento, setFechaVencimiento] = useState("");
@@ -113,20 +115,42 @@ export default function Factura() {
     }
   }
 
+  function filtrarTabla(palabraBusqueda) {
+    setPalabraFiltro(palabraBusqueda); // Actualizar la palabra de búsqueda
+
+    if (palabraBusqueda === '') {
+      setBusqueda([]); // Limpiar la búsqueda si no hay palabra
+    } else {
+      const filtro = rows.filter(row =>
+        Object.values(row).some(elemento =>
+          String(elemento).toLowerCase().includes(palabraBusqueda.toLowerCase())
+        )
+      );
+      setBusqueda(filtro); // Actualizar los resultados de búsqueda
+    }
+  }
+
   return (
     <div className="factura-container">
       <header className="factura-header">
         <h1 className="factura-title">Factura</h1>
-        <HeaderGroup nombreBtn={"Factura"} onShowModal={showModal} />
+        <HeaderGroup
+          nombreBtn={"Factura"}
+          onShowModal={showModal}
+          onFiltrarTabla={filtrarTabla} // Pasar la función de filtrado
+        />
       </header>
 
       <main>
         <Table
           columnas={columnas}
-          data={rows}
+          data={palabraFiltro.length > 0 ? busqueda : rows} // Pasar datos filtrados o todos
           setIsModalConfirmacion={setIsModalConfirmacion}
           onShowModal={showModal}
         />
+        {busqueda.length === 0 && palabraFiltro.length > 0 ? (
+          <h1 style={{ textAlign: 'center', marginTop: '30px' }}>No hay datos de búsqueda</h1>
+        ) : ''}
       </main>
 
       {/* MODAL AGREGAR*/}
@@ -149,7 +173,7 @@ export default function Factura() {
           <Button
             className="factura-button"
             variant="contained"
-            color={isEditing ? "warning": "success"}
+            color={isEditing ? "warning" : "success"}
             onClick={validarInformacion}
           >
             {isEditing ? "Editar Factura" : "Agregar Factura"}

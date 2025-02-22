@@ -18,6 +18,8 @@ export default function Productos() {
   const [idSeleccionado, setIdSeleccionado] = useState(null);
 
   const [rows, setRows] = useState([]);
+  const [palabraFiltro, setPalabraFiltro] = useState(''); 
+  const [busqueda, setBusqueda] = useState([]); 
   const [nombre, setNombre] = useState("");
   const [costo, setCosto] = useState("");
   const [tipoProducto, setTipoProducto] = useState("");
@@ -99,20 +101,42 @@ export default function Productos() {
     }
   }
 
+  function filtrarTabla(palabraBusqueda) {
+    setPalabraFiltro(palabraBusqueda); // Actualizar la palabra de búsqueda
+
+    if (palabraBusqueda === '') {
+      setBusqueda([]); // Limpiar la búsqueda si no hay palabra
+    } else {
+      const filtro = rows.filter(row =>
+        Object.values(row).some(elemento =>
+          String(elemento).toLowerCase().includes(palabraBusqueda.toLowerCase())
+        )
+      );
+      setBusqueda(filtro); // Actualizar los resultados de búsqueda
+    }
+  }
+
   return (
     <div className="productos-container">
       <header className="productos-header">
         <h1 className="productos-title">Productos</h1>
-        <HeaderGroup nombreBtn={"Productos"} onShowModal={showModal} />
+        <HeaderGroup
+          nombreBtn={"Productos"}
+          onShowModal={showModal}
+          onFiltrarTabla={filtrarTabla} // Pasar la función de filtrado
+        />
       </header>
 
       <main>
         <Table
           columnas={columnas}
-          data={rows}
+          data={palabraFiltro.length > 0 ? busqueda : rows} // Pasar datos filtrados o todos
           setIsModalConfirmacion={setIsModalConfirmacion}
           onShowModal={showModal}
         />
+        {busqueda.length === 0 && palabraFiltro.length > 0 ? (
+          <h1 style={{ textAlign: 'center', marginTop: '30px' }}>No hay datos de búsqueda</h1>
+        ) : ''}
       </main>
 
       {/* MODAL AGREGAR*/}

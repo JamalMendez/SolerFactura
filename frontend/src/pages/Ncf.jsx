@@ -9,9 +9,7 @@ import useModal from "../hooks/UseModal";
 import ModalConfirmacion from "../components/ModalConfirmacion";
 import Alert from "@mui/joy/Alert";
 
-
 const columnas = ["Tipo", "Secuencia", "Serie", "Activo", "Fecha De Creacion"];
-const rows = [];
 
 const date = new Date();
 const day = String(date.getDate()).padStart(2, "0");
@@ -27,10 +25,11 @@ export default function Ncf() {
   const [idSeleccionado, setIdSeleccionado] = useState(null);
 
   const [rows, setRows] = useState([]);
+  const [palabraFiltro, setPalabraFiltro] = useState(''); 
+  const [busqueda, setBusqueda] = useState([]); 
   const [tipo, setTipo] = useState("");
   const [secuencia, setSecuencia] = useState("");
   const [serie, setSerie] = useState("");
-  const [fechaCreacion, setFechaCreacion] = useState("");
 
   const [
     isError,
@@ -43,11 +42,10 @@ export default function Ncf() {
   ] = useModal();
 
   function showModal(id) {
-    setIsModal(true)
+    setIsModal(true);
     setTipo("");
     setSecuencia("");
     setSerie("");
-    setFechaCreacion("");
     setIsEditing(false);
 
     if (typeof id === "number" && !isNaN(id)) {
@@ -106,10 +104,24 @@ export default function Ncf() {
   function editarFila(id) {
     const fila = rows.find((row, i) => i === id);
     if (fila) {
-      console.log(fila.secuencia)
       setTipo(fila.tipo);
       setSecuencia(fila.secuencia);
       setSerie(fila.serie);
+    }
+  }
+
+  function filtrarTabla(palabraBusqueda) {
+    setPalabraFiltro(palabraBusqueda); // Actualizar la palabra de búsqueda
+
+    if (palabraBusqueda === '') {
+      setBusqueda([]); // Limpiar la búsqueda si no hay palabra
+    } else {
+      const filtro = rows.filter(row =>
+        Object.values(row).some(elemento =>
+          String(elemento).toLowerCase().includes(palabraBusqueda.toLowerCase())
+        )
+      );
+      setBusqueda(filtro); // Actualizar los resultados de búsqueda
     }
   }
 
@@ -117,16 +129,23 @@ export default function Ncf() {
     <div className="factura-container">
       <header className="factura-header">
         <h1 className="factura-title">NCF</h1>
-        <HeaderGroup nombreBtn={"NCF"} onShowModal={showModal} />
+        <HeaderGroup
+          nombreBtn={"NCF"}
+          onShowModal={showModal}
+          onFiltrarTabla={filtrarTabla} // Pasar la función de filtrado
+        />
       </header>
 
       <main>
         <Table
           columnas={columnas}
-          data={rows}
+          data={palabraFiltro.length > 0 ? busqueda : rows} // Pasar datos filtrados o todos
           setIsModalConfirmacion={setIsModalConfirmacion}
           onShowModal={showModal}
         />
+        {busqueda.length === 0 && palabraFiltro.length > 0 ? (
+          <h1 style={{ textAlign: 'center', marginTop: '30px' }}>No hay datos de búsqueda</h1>
+        ) : ''}
       </main>
 
       {/* MODAL AGREGAR*/}
@@ -149,7 +168,7 @@ export default function Ncf() {
           <Button
             className="factura-button"
             variant="contained"
-            color={isEditing ? "warning": "success"}
+            color={isEditing ? "warning" : "success"}
             onClick={validarInformacion}
           >
             {isEditing ? "Editar NCF" : "Agregar NCF"}
