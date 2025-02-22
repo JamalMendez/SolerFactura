@@ -16,7 +16,6 @@ export default function CamposProductos({
         value={nombre}
         onChange={(e) => setNombre(e.target.value)}
         fullWidth
-        margin="normal"
       />
 
       <TextField
@@ -25,7 +24,6 @@ export default function CamposProductos({
         value={costo}
         onChange={(e) => setCosto(e.target.value)}
         fullWidth
-        margin="normal"
       />
 
       <TextField
@@ -34,7 +32,6 @@ export default function CamposProductos({
         value={tipoProducto}
         onChange={(e) => setTipoProducto(e.target.value)}
         fullWidth
-        margin="normal"
       />
     </div>
   );
