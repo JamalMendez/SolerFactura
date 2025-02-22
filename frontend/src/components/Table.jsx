@@ -1,47 +1,33 @@
-import * as React from 'react';
-import Paper from '@mui/material/Paper';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TablePagination from '@mui/material/TablePagination';
-import TableRow from '@mui/material/TableRow';
-import TableHead from '@mui/material/TableHead';
-import Button from '@mui/material/Button';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
+import * as React from "react";
+import Paper from "@mui/material/Paper";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TablePagination from "@mui/material/TablePagination";
+import TableRow from "@mui/material/TableRow";
+import ActionButtons from "./ActionButtons";
 
 // NORMALIZAR EL NOMBRE DE LAS COLUMNAS
 const normalizeKey = (str) =>
-  str.toLowerCase().replace(/\s+/g, '').replace(/[^\w]/g, ''); 
+  str.toLowerCase().replace(/\s+/g, "").replace(/[^\w]/g, "");
 
-export default function ColumnGroupingTable({ columnas, data }) {
-  const columnMap = columnas.reduce((acc, col) => {
-    acc[normalizeKey(col)] = col;
-    return acc;
-  }, {});
+export default function ColumnGroupingTable({
+  columnas,
+  data,
+  setIsModalConfirmacion,
+  onShowModal
+}) {
 
   const columns = [
-    { id: 'id', label: 'ID', minWidth: 50 },
-    ...columnas.map(col => ({
+    ...columnas.map((col, i) => ({
       id: normalizeKey(col),
       label: col,
-      minWidth: 100,
-      align: 'left',
+      minWidth: i === 0 ? 40 : 100,
+      align: "left",
     })),
-    { id: 'acciones', label: 'Acciones', minWidth: 100, align: 'center' },
+    { id: "acciones", label: "Acciones", minWidth: 100, align: "center" },
   ];
-
-  const normalizedRows = data.map((row, index) => {
-    let newRow = { id: index + 1 }; //ID GENERADO
-    Object.keys(row).forEach(key => {
-      const normalizedKey = normalizeKey(key);
-      if (columnMap[normalizedKey]) {
-        newRow[normalizedKey] = row[key];
-      }
-    });
-    return newRow;
-  });
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -55,76 +41,58 @@ export default function ColumnGroupingTable({ columnas, data }) {
     setPage(0);
   };
 
-  // MANEJAR LOS BOTONES
-  const handleEditar = (id) => {
-    console.log(`Editar fila con ID: ${id}`);
-  };
-
-  const handleEliminar = (id) => {
-    console.log(`Eliminar fila con ID: ${id}`);
-  };
-
   return (
-    <Paper sx={{ width: '95%' }}>
-      <TableContainer sx={{ maxHeight: 440 }}>
+    <Paper sx={{ width: "95%" }}>
+      <TableContainer sx={{ maxHeight: 420 }}>
         <Table stickyHeader aria-label="sticky table">
-            <TableRow>
-              {columns.map((column) => (
-                <TableCell
-                  key={column.id}
-                  align={column.align}
-                  style={{ top: 57, minWidth: column.minWidth, color: 'green', fontWeight: 700 }}
-                >
-                  {column.label}
-                </TableCell>
-              ))}
-            </TableRow>
+          <TableRow>
+            {columns.map((column) => (
+              <TableCell
+                key={column.id}
+                align={column.align}
+                style={{
+                  top: 57,
+                  minWidth: column.minWidth,
+                  color: "green",
+                  fontWeight: 700,
+                }}
+              >
+                {column.label}
+              </TableCell>
+            ))}
+          </TableRow>
           <TableBody>
-            {normalizedRows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-              <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
-                {columns.map((column) => {
-                  if (column.id === 'acciones') {
+            {data
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((row, index) => (
+                <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                  {columns.map((column) => {
+                    if (column.id === "acciones") {
+                      return (
+                        <TableCell key={column.id} align={column.align}>
+
+                          {/* EDITAR Y ELIMINAR BUTTONS */}
+                          <ActionButtons index={index} row={row} onShowModal={onShowModal} setIsModalConfirmacion={setIsModalConfirmacion}/>
+                        </TableCell>
+                      );
+                    }
+                    const value =
+                      row[column.id] !== undefined ? row[column.id] : "N/A";
                     return (
-                      <TableCell key={column.id} align={column.align}>
-                        <Button
-                          variant="contained"
-                          color="warning"
-                          size="small"
-                          onClick={() => handleEditar(row.id)}
-                          startIcon={<EditIcon />}
-                          style={{ marginRight: '5px', textTransform: 'capitalize' }}
-                        >
-                          Editar
-                        </Button>
-                        <Button
-                          variant="contained"
-                          color="error"
-                          size="small"
-                          onClick={() => handleEliminar(row.id)}
-                          startIcon={<DeleteIcon />}
-                          style={{ textTransform: 'capitalize' }}
-                        >
-                          Eliminar
-                        </Button>
+                      <TableCell style={{whiteSpace: "nowrap",overflow: "hidden", textOverflow: 'ellipsis', maxWidth: '45px'}} key={column.id} align={column.align}>
+                        {value}
                       </TableCell>
                     );
-                  }
-                  const value = row[column.id] !== undefined ? row[column.id] : 'N/A';
-                  return (
-                    <TableCell key={column.id} align={column.align}>
-                      {value}
-                    </TableCell>
-                  );
-                })}
-              </TableRow>
-            ))}
+                  })}
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </TableContainer>
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
-        count={normalizedRows.length}
+        count={data.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}
