@@ -4,7 +4,7 @@ import HeaderGroup from "../components/HeaderGroup";
 import Modal from "../components/Modal";
 import { useState } from "react";
 import CamposNcf from "../components/CamposNcf";
-import { Button } from "@mui/material";
+import { Button, tablePaginationClasses } from "@mui/material";
 import useModal from "../hooks/UseModal";
 import ModalConfirmacion from "../components/ModalConfirmacion";
 import Alert from "@mui/joy/Alert";
@@ -15,6 +15,7 @@ const date = new Date();
 const day = String(date.getDate()).padStart(2, "0");
 const month = String(date.getMonth() + 1).padStart(2, "0");
 const year = date.getFullYear();
+const regex = /^\d{8,13}$/;
 
 const fechaCreacion = `${year}-${month}-${day}`;
 
@@ -42,6 +43,7 @@ export default function Ncf() {
   ] = useModal();
 
   function showModal(id) {
+
     setIsModal(true);
     setTipo("");
     setSecuencia("");
@@ -52,6 +54,9 @@ export default function Ncf() {
       setIdSeleccionado(id);
       setIsEditing(true);
       editarFila(id);
+    }else{
+      //GENERAR SECUENCIA
+      generarSecuencia();
     }
   }
 
@@ -62,12 +67,14 @@ export default function Ncf() {
       return;
     }
 
-    setIsModal(false);
-    setTipo("");
-    setSecuencia("");
-    setSerie("");
+    if(!regex.test(secuencia)){
+      setMensajeAlerta("Secuencial no valido");
+      setIsError(true);
+      return;
+    }
 
     if (!isEditing) {
+      generarSecuencia(secuencia);
       setRows((rows) => [
         {
           id,
@@ -94,6 +101,34 @@ export default function Ncf() {
         )
       );
       setIsEditing(false);
+    }
+
+    setIsModal(false);
+    setTipo("");
+    setSecuencia("");
+    setSerie("");
+  }
+
+  function generarSecuencia(secuencial){
+    let numeros = '';
+    let tomarUltimoSecuencial = JSON.parse(localStorage.getItem('secuencial'));
+
+    //SI NO HAY UN SECUENCIAL
+    if(!tomarUltimoSecuencial){
+      setSecuencia("00000001");
+      localStorage.setItem('secuencial', JSON.stringify('00000001'))
+      return;
+    }
+
+    //SI HAY SECUENCIAL
+    tomarUltimoSecuencial.split('').forEach(num => Number(num) > 0 ? numeros += num : '');
+    numeros = Number(numeros) + 1;
+
+    const secuencialActualizado = tomarUltimoSecuencial.slice(0, -numeros.toString().length) + numeros;
+    setSecuencia(secuencialActualizado);
+
+    if(secuencial){
+      localStorage.setItem('secuencial', JSON.stringify(secuencial))
     }
   }
 

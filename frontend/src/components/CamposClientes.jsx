@@ -50,7 +50,7 @@ export default function CamposClientes({
 
       <TextField
         label="Teléfono"
-        type="text"
+        type="number"
         value={telefono}
         onChange={(e) => setTelefono(e.target.value)}
         fullWidth
@@ -58,7 +58,7 @@ export default function CamposClientes({
 
       <TextField
         label="Celular"
-        type="text"
+        type="number"
         value={celular}
         onChange={(e) => setCelular(e.target.value)}
         fullWidth

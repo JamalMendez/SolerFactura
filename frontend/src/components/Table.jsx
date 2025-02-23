@@ -26,7 +26,7 @@ export default function ColumnGroupingTable({
       minWidth: i === 0 ? 40 : 100,
       align: "left",
     })),
-    { id: "acciones", label: "Acciones", minWidth: 100, align: "center" },
+    { id: "acciones", label: "Acciones", minWidth: 70, align: "center" },
   ];
 
   const [page, setPage] = React.useState(0);
@@ -45,6 +45,7 @@ export default function ColumnGroupingTable({
     <Paper sx={{ width: "95%" }}>
       <TableContainer sx={{ maxHeight: 420 }}>
         <Table stickyHeader aria-label="sticky table">
+          <thead>
           <TableRow>
             {columns.map((column) => (
               <TableCell
@@ -61,6 +62,7 @@ export default function ColumnGroupingTable({
               </TableCell>
             ))}
           </TableRow>
+          </thead>
           <TableBody>
             {data
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)

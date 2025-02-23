@@ -55,6 +55,12 @@ export default function Productos() {
       return;
     }
 
+    if(costo <= 0){
+      setMensajeAlerta("Producto no tiene costo");
+      setIsError(true);
+      return;
+    }
+
     setIsModal(false);
     setNombre("");
     setCosto("");
@@ -66,7 +72,7 @@ export default function Productos() {
           id,
           nombre,
           costo,
-          tipoProducto,
+          tipodeproducto: tipoProducto,
         },
         ...rows,
       ]);
@@ -79,7 +85,7 @@ export default function Productos() {
                 ...row,
                 nombre,
                 costo,
-                tipoProducto,
+                tipodeproducto: tipoProducto,
               }
             : row
         )

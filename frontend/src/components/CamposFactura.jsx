@@ -1,5 +1,6 @@
 import { TextField } from "@mui/material";
 import Textarea from "@mui/joy/Textarea";
+import FormControl from "@mui/joy/FormControl";
 
 const date = new Date();
 
@@ -32,13 +33,23 @@ export default function CamposFactura({
         onChange={(e) => setDescripcion(e.target.value)}
       />
 
-      <TextField type="date" value={`${year}-${month}-${day}`} disabled />
+      <FormControl>
+        <label>Fecha Creacion</label>
+        <TextField 
+        type="date" 
+        value={`${year}-${month}-${day}`} 
+        disabled />
+      </FormControl>
 
-      <TextField
-        type="date"
-        value={fechaVencimiento}
-        onChange={(e) => setFechaVencimiento(e.target.value)}
-      />
+      <FormControl>
+        <label>Fecha Vencimiento</label>
+        <TextField
+          type="date"
+          value={fechaVencimiento}
+          onChange={(e) => setFechaVencimiento(e.target.value)}
+        />
+      </FormControl>
+      
     </div>
   );
 }

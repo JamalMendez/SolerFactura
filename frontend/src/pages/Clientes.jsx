@@ -9,7 +9,8 @@ import CamposClientes from "../components/CamposClientes";
 import ModalConfirmacion from "../components/ModalConfirmacion";
 import useModal from "../hooks/UseModal";
 
-const columnas = ["Cedula", "Nombre", "E-mail", "Direccion", "Telefono", "Numero"];
+const columnas = ["Cedula", "Nombre", "E-mail", "Direccion", "Telefono", "Celular"];
+const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
 
 export default function Clientes() {
   const [isModal, setIsModal] = useState(false);
@@ -57,6 +58,18 @@ export default function Clientes() {
   function validarInformacion() {
     if ([cedula, nombre, email, direccion, telefono, celular].includes("")) {
       setMensajeAlerta("Campos no pueden ir vacios");
+      setIsError(true);
+      return;
+    }
+
+    if(!regex.test(email)){
+      setMensajeAlerta("Email invalido");
+      setIsError(true);
+      return;
+    }
+
+    if(cedula.length !== 11){
+      setMensajeAlerta("Cedula invalida");
       setIsError(true);
       return;
     }
