@@ -89,7 +89,7 @@ export default function Ncf() {
             tipo,
             secuencia,
             serie,
-            fechacreacion: fechaCreacion,
+            fechadecreacion: fechaCreacion,
           },
           ...rows,
         ];
