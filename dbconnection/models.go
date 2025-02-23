@@ -47,6 +47,7 @@ type Factura struct {
 	NCF_id        uint    `gorm:"not null"`
 	CLI_id        uint    `gorm:"not null"`
 	TPO_id        uint    `gorm:"not null"`
+	Nombre        string  `gorm:"unique;size:150"`
 	CostoSubtotal float32 `gorm:"not null"`
 	CostoTotal    float32 `gorm:"not null"`
 	Descuento     float32
