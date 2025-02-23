@@ -76,6 +76,10 @@ export default function CreacionFactura() {
 
                     <h1 style={{color: 'green'}}>Campos de la factura</h1>
                     <OtrosCamposFactura onChange={handleChange} />
+
+                    <div style={{marginTop: '20px'}}>
+                        <Button color='success' variant='contained'>Generar Factura</Button>
+                    </div> 
                 </main>
 
                 <aside className="visualizacion-factura">
