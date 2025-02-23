@@ -1,7 +1,10 @@
 import { Button } from "@mui/material";
 import TextField from "@mui/material/TextField";
+import { useNavigate } from "react-router-dom";
 
 export default function HeaderGroup({ onFiltrarTabla, nombreBtn, onShowModal }) {
+  const navigate = useNavigate();
+
   return (
     <div className="header-group">
       <TextField
@@ -16,7 +19,7 @@ export default function HeaderGroup({ onFiltrarTabla, nombreBtn, onShowModal }) 
         size="medium"
         color="success"
         variant="contained"
-        onClick={onShowModal}
+        onClick={() => nombreBtn === 'Factura' ? navigate('/creacion-factura') : onShowModal()}
       >
         Agregar {nombreBtn}
       </Button>

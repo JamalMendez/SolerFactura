@@ -89,8 +89,8 @@ export default function Factura() {
           },
           ...rows,
         ];
-        insertarLocalStorage(nombreTabla, nuevasRows); // Guarda el nuevo array
-        insertarUltimoId(nombreTabla, id + 1); // Guarda el próximo ID para esta tabla
+        insertarLocalStorage(nombreTabla, nuevasRows); 
+        insertarUltimoId(nombreTabla, id + 1); 
         return nuevasRows;
       });
       setId((id) => id + 1);
@@ -106,7 +106,7 @@ export default function Factura() {
               }
             : row
         );
-        insertarLocalStorage(nombreTabla, nuevasRows); // Guarda el array actualizado
+        insertarLocalStorage(nombreTabla, nuevasRows);
         return nuevasRows;
       });
       setIsEditing(false);
@@ -116,7 +116,7 @@ export default function Factura() {
   function eliminarElemento(id) {
     setRows((rows) => {
       const nuevasRows = rows.filter((row) => row.id !== id);
-      insertarLocalStorage(nombreTabla, nuevasRows); // Guarda el array actualizado
+      insertarLocalStorage(nombreTabla, nuevasRows); 
       return nuevasRows;
     });
   }
