@@ -28,16 +28,18 @@ const fechaCreacion = `${year}-${month}-${day}`;
 export default function Factura() {
   const [isModal, setIsModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [id, setId] = useState(1);
   const [idSeleccionado, setIdSeleccionado] = useState(null);
-  const [insertarLocalStorage, retornarLocalStorage] = UseStorage();
+  const [insertarLocalStorage, retornarLocalStorage, insertarUltimoId, retornarUltimoId] = UseStorage();
 
-  const [rows, setRows] = useState(retornarLocalStorage('tablaFacturas') || []);
-  const [palabraFiltro, setPalabraFiltro] = useState(''); 
-  const [busqueda, setBusqueda] = useState([]); 
+  const nombreTabla = "tablaFacturas"; 
+  const [rows, setRows] = useState(retornarLocalStorage(nombreTabla) || []);
+  const [palabraFiltro, setPalabraFiltro] = useState('');
+  const [busqueda, setBusqueda] = useState([]);
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [fechaVencimiento, setFechaVencimiento] = useState("");
+
+  const [id, setId] = useState(retornarUltimoId(nombreTabla)); 
 
   const [
     isError,
@@ -48,7 +50,6 @@ export default function Factura() {
     setIsModalConfirmacion,
     cancelarEliminacion
   ] = useModal();
-
 
   function showModal(id) {
     setNombre("");
@@ -88,8 +89,9 @@ export default function Factura() {
           },
           ...rows,
         ];
-        insertarLocalStorage('tablaFacturas', nuevasRows); // Guarda el nuevo array
-        return nuevasRows; // Retorna el nuevo array para actualizar el estado
+        insertarLocalStorage(nombreTabla, nuevasRows); // Guarda el nuevo array
+        insertarUltimoId(nombreTabla, id + 1); // Guarda el próximo ID para esta tabla
+        return nuevasRows;
       });
       setId((id) => id + 1);
     } else {
@@ -104,8 +106,8 @@ export default function Factura() {
               }
             : row
         );
-        insertarLocalStorage('tablaFacturas', nuevasRows); // Guarda el array actualizado
-        return nuevasRows; // Retorna el array actualizado
+        insertarLocalStorage(nombreTabla, nuevasRows); // Guarda el array actualizado
+        return nuevasRows;
       });
       setIsEditing(false);
     }
@@ -114,8 +116,8 @@ export default function Factura() {
   function eliminarElemento(id) {
     setRows((rows) => {
       const nuevasRows = rows.filter((row) => row.id !== id);
-      insertarLocalStorage('tablaFacturas', nuevasRows); // Guarda el array actualizado
-      return nuevasRows; // Retorna el array actualizado
+      insertarLocalStorage(nombreTabla, nuevasRows); // Guarda el array actualizado
+      return nuevasRows;
     });
   }
 
@@ -129,17 +131,17 @@ export default function Factura() {
   }
 
   function filtrarTabla(palabraBusqueda) {
-    setPalabraFiltro(palabraBusqueda); // Actualizar la palabra de búsqueda
+    setPalabraFiltro(palabraBusqueda);
 
     if (palabraBusqueda === '') {
-      setBusqueda([]); // Limpiar la búsqueda si no hay palabra
+      setBusqueda([]);
     } else {
       const filtro = rows.filter(row =>
         Object.values(row).some(elemento =>
           String(elemento).toLowerCase().includes(palabraBusqueda.toLowerCase())
         )
       );
-      setBusqueda(filtro); // Actualizar los resultados de búsqueda
+      setBusqueda(filtro);
     }
   }
 
@@ -150,14 +152,14 @@ export default function Factura() {
         <HeaderGroup
           nombreBtn={"Factura"}
           onShowModal={showModal}
-          onFiltrarTabla={filtrarTabla} // Pasar la función de filtrado
+          onFiltrarTabla={filtrarTabla}
         />
       </header>
 
       <main>
         <Table
           columnas={columnas}
-          data={palabraFiltro.length > 0 ? busqueda : rows} // Pasar datos filtrados o todos
+          data={palabraFiltro.length > 0 ? busqueda : rows}
           setIsModalConfirmacion={setIsModalConfirmacion}
           onShowModal={showModal}
         />

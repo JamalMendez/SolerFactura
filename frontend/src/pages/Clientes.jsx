@@ -16,15 +16,17 @@ const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
 export default function Clientes() {
   const [
     insertarLocalStorage,
-    retornarLocalStorage
+    retornarLocalStorage,
+    insertarUltimoId,
+    retornarUltimoId
   ] = UseStorage();
 
+  const nombreTabla = "tablaClientes"; 
   const [isModal, setIsModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [id, setId] = useState(1);
   const [idSeleccionado, setIdSeleccionado] = useState(null);
 
-  const [rows, setRows] = useState(retornarLocalStorage('tablaClientes') || []);
+  const [rows, setRows] = useState(retornarLocalStorage(nombreTabla) || []);
   const [palabraFiltro, setPalabraFiltro] = useState(''); 
   const [busqueda, setBusqueda] = useState([]); 
   const [cedula, setCedula] = useState("");
@@ -33,6 +35,8 @@ export default function Clientes() {
   const [direccion, setDireccion] = useState("");
   const [telefono, setTelefono] = useState("");
   const [celular, setCelular] = useState("");
+
+  const [id, setId] = useState(retornarUltimoId(nombreTabla)); // Inicializa el ID desde el localStorage
 
   const [
     isError,
@@ -68,13 +72,13 @@ export default function Clientes() {
       return;
     }
 
-    if(!regex.test(email)){
+    if (!regex.test(email)) {
       setMensajeAlerta("Email invalido");
       setIsError(true);
       return;
     }
 
-    if(cedula.length !== 11){
+    if (cedula.length !== 11) {
       setMensajeAlerta("Cedula invalida");
       setIsError(true);
       return;
@@ -90,25 +94,25 @@ export default function Clientes() {
 
     if (!isEditing) {
       setRows((rows) => {
-          const nuevasRows = [
-            {
-              id,
-              cedula,
-              nombre,
-              email,
-              direccion,
-              telefono,
-              celular,
-            },
-            ...rows,
-          ]
-          insertarLocalStorage('tablaClientes', nuevasRows);
-          return nuevasRows;
-        });
-        setId((id) => id + 1);
-      }
-      else {
-      setRows((rows) =>{
+        const nuevasRows = [
+          {
+            id,
+            cedula,
+            nombre,
+            email,
+            direccion,
+            telefono,
+            celular,
+          },
+          ...rows,
+        ];
+        insertarLocalStorage(nombreTabla, nuevasRows); // Guarda el nuevo array
+        insertarUltimoId(nombreTabla, id + 1); // Guarda el próximo ID para esta tabla
+        return nuevasRows;
+      });
+      setId((id) => id + 1);
+    } else {
+      setRows((rows) => {
         const nuevasRows = rows.map((row, i) =>
           i === idSeleccionado
             ? {
@@ -121,19 +125,20 @@ export default function Clientes() {
                 celular,
               }
             : row
-        )
-        insertarLocalStorage('tablaClientes', nuevasRows)
+        );
+        insertarLocalStorage(nombreTabla, nuevasRows); // Guarda el array actualizado
         return nuevasRows;
-      }
-      );
-      console.log(rows)
-      insertarLocalStorage('tablaClientes', rows)
+      });
       setIsEditing(false);
     }
   }
 
   function eliminarElemento(id) {
-    setRows((rows) => rows.filter((row) => row.id !== id));
+    setRows((rows) => {
+      const nuevasRows = rows.filter((row) => row.id !== id);
+      insertarLocalStorage(nombreTabla, nuevasRows); // Guarda el array actualizado
+      return nuevasRows;
+    });
   }
 
   function editarFila(id) {

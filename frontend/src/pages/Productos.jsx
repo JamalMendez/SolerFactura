@@ -15,16 +15,18 @@ const columnas = ["ID", "Nombre", "Costo", "Tipo de producto"];
 export default function Productos() {
   const [isModal, setIsModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [id, setId] = useState(1);
   const [idSeleccionado, setIdSeleccionado] = useState(null);
-  const [insertarLocalStorage, retornarLocalStorage] = UseStorage();
+  const [insertarLocalStorage, retornarLocalStorage, insertarUltimoId, retornarUltimoId] = UseStorage();
 
-  const [rows, setRows] = useState(retornarLocalStorage('tablaProductos') || []);
+  const nombreTabla = "tablaProductos"; 
+  const [rows, setRows] = useState(retornarLocalStorage(nombreTabla) || []);
   const [palabraFiltro, setPalabraFiltro] = useState(''); 
   const [busqueda, setBusqueda] = useState([]); 
   const [nombre, setNombre] = useState("");
   const [costo, setCosto] = useState("");
   const [tipoProducto, setTipoProducto] = useState("");
+
+  const [id, setId] = useState(retornarUltimoId(nombreTabla)); 
 
   const [
     isError,
@@ -57,7 +59,7 @@ export default function Productos() {
       return;
     }
 
-    if(costo <= 0){
+    if (costo <= 0) {
       setMensajeAlerta("Producto no tiene costo");
       setIsError(true);
       return;
@@ -78,13 +80,14 @@ export default function Productos() {
             tipodeproducto: tipoProducto,
           },
           ...rows,
-        ]
-        insertarLocalStorage('tablaProductos', nuevasRows)
+        ];
+        insertarLocalStorage(nombreTabla, nuevasRows);
+        insertarUltimoId(nombreTabla, id + 1); 
         return nuevasRows;
       });
       setId((id) => id + 1);
     } else {
-      setRows((rows) =>{
+      setRows((rows) => {
         const nuevasRows = rows.map((row, i) =>
           i === idSeleccionado
             ? {
@@ -94,17 +97,20 @@ export default function Productos() {
                 tipodeproducto: tipoProducto,
               }
             : row
-        )
-        insertarLocalStorage('tablaProductos', nuevasRows);
+        );
+        insertarLocalStorage(nombreTabla, nuevasRows);
         return nuevasRows;
-      }
-      );
+      });
       setIsEditing(false);
     }
   }
 
   function eliminarElemento(id) {
-    setRows((rows) => rows.filter((row) => row.id !== id));
+    setRows((rows) => {
+      const nuevasRows = rows.filter((row) => row.id !== id);
+      insertarLocalStorage(nombreTabla, nuevasRows);
+      return nuevasRows;
+    });
   }
 
   function editarFila(id) {
@@ -112,22 +118,22 @@ export default function Productos() {
     if (fila) {
       setNombre(fila.nombre);
       setCosto(fila.costo);
-      setTipoProducto(fila.tipoProducto);
+      setTipoProducto(fila.tipodeproducto);
     }
   }
 
   function filtrarTabla(palabraBusqueda) {
-    setPalabraFiltro(palabraBusqueda); // Actualizar la palabra de búsqueda
+    setPalabraFiltro(palabraBusqueda); 
 
     if (palabraBusqueda === '') {
-      setBusqueda([]); // Limpiar la búsqueda si no hay palabra
+      setBusqueda([]); 
     } else {
       const filtro = rows.filter(row =>
         Object.values(row).some(elemento =>
           String(elemento).toLowerCase().includes(palabraBusqueda.toLowerCase())
         )
       );
-      setBusqueda(filtro); // Actualizar los resultados de búsqueda
+      setBusqueda(filtro); 
     }
   }
 
@@ -138,14 +144,14 @@ export default function Productos() {
         <HeaderGroup
           nombreBtn={"Productos"}
           onShowModal={showModal}
-          onFiltrarTabla={filtrarTabla} // Pasar la función de filtrado
+          onFiltrarTabla={filtrarTabla}
         />
       </header>
 
       <main>
         <Table
           columnas={columnas}
-          data={palabraFiltro.length > 0 ? busqueda : rows} // Pasar datos filtrados o todos
+          data={palabraFiltro.length > 0 ? busqueda : rows} 
           setIsModalConfirmacion={setIsModalConfirmacion}
           onShowModal={showModal}
         />

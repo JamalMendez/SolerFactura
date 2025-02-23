@@ -8,7 +8,7 @@ import { Button } from "@mui/material";
 import useModal from "../hooks/UseModal";
 import ModalConfirmacion from "../components/ModalConfirmacion";
 import Alert from "@mui/joy/Alert";
-import UseStorage from "../hooks/UseStorage"; // Importa el hook UseStorage
+import UseStorage from "../hooks/UseStorage";
 
 const columnas = ["Tipo", "Secuencia", "Serie", "Activo", "Fecha De Creacion"];
 
@@ -23,16 +23,18 @@ const fechaCreacion = `${year}-${month}-${day}`;
 export default function Ncf() {
   const [isModal, setIsModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [id, setId] = useState(1);
   const [idSeleccionado, setIdSeleccionado] = useState(null);
-  const [insertarLocalStorage, retornarLocalStorage] = UseStorage(); // Usa el hook UseStorage
+  const [insertarLocalStorage, retornarLocalStorage, insertarUltimoId, retornarUltimoId] = UseStorage();
 
-  const [rows, setRows] = useState(retornarLocalStorage('tablaNcf') || []);
+  const nombreTabla = "tablaNcf"; 
+  const [rows, setRows] = useState(retornarLocalStorage(nombreTabla) || []);
   const [palabraFiltro, setPalabraFiltro] = useState(''); 
   const [busqueda, setBusqueda] = useState([]); 
   const [tipo, setTipo] = useState("");
   const [secuencia, setSecuencia] = useState("");
   const [serie, setSerie] = useState("");
+
+  const [id, setId] = useState(retornarUltimoId(nombreTabla)); 
 
   const [
     isError,
@@ -43,7 +45,6 @@ export default function Ncf() {
     setIsModalConfirmacion,
     cancelarEliminacion
   ] = useModal();
-
 
   function showModal(id) {
     setIsModal(true);
@@ -92,8 +93,9 @@ export default function Ncf() {
           },
           ...rows,
         ];
-        insertarLocalStorage('tablaNcf', nuevasRows); // Guarda el nuevo array
-        return nuevasRows; // Retorna el nuevo array para actualizar el estado
+        insertarLocalStorage(nombreTabla, nuevasRows); 
+        insertarUltimoId(nombreTabla, id + 1); 
+        return nuevasRows; 
       });
       setId((id) => id + 1);
     } else {
@@ -109,8 +111,8 @@ export default function Ncf() {
               }
             : row
         );
-        insertarLocalStorage('tablaNcf', nuevasRows); // Guarda el array actualizado
-        return nuevasRows; // Retorna el array actualizado
+        insertarLocalStorage(nombreTabla, nuevasRows); 
+        return nuevasRows; 
       });
       setIsEditing(false);
     }
@@ -142,8 +144,8 @@ export default function Ncf() {
   function eliminarElemento(id) {
     setRows((rows) => {
       const nuevasRows = rows.filter((row) => row.id !== id);
-      insertarLocalStorage('tablaNcf', nuevasRows); // Guarda el array actualizado
-      return nuevasRows; // Retorna el array actualizado
+      insertarLocalStorage(nombreTabla, nuevasRows);
+      return nuevasRows; 
     });
   }
 
@@ -157,16 +159,16 @@ export default function Ncf() {
   }
 
   function filtrarTabla(palabraBusqueda) {
-    setPalabraFiltro(palabraBusqueda); // Actualizar la palabra de búsqueda
+    setPalabraFiltro(palabraBusqueda); 
 
     if (palabraBusqueda === '') {
-      setBusqueda([]); // Limpiar la búsqueda si no hay palabra
+      setBusqueda([]); 
     } else {
       const filtro = rows.filter(row =>
         Object.values(row).some(elemento =>
           String(elemento).toLowerCase().includes(palabraBusqueda.toLowerCase())
       ));
-      setBusqueda(filtro) // Actualizar los resultados de búsqueda
+      setBusqueda(filtro); 
     }
   }
 
@@ -177,14 +179,14 @@ export default function Ncf() {
         <HeaderGroup
           nombreBtn={"NCF"}
           onShowModal={showModal}
-          onFiltrarTabla={filtrarTabla} // Pasar la función de filtrado
+          onFiltrarTabla={filtrarTabla} 
         />
       </header>
 
       <main>
         <Table
           columnas={columnas}
-          data={palabraFiltro.length > 0 ? busqueda : rows} // Pasar datos filtrados o todos
+          data={palabraFiltro.length > 0 ? busqueda : rows}
           setIsModalConfirmacion={setIsModalConfirmacion}
           onShowModal={showModal}
         />
