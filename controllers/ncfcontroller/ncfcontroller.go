@@ -10,7 +10,7 @@ import (
 
 func Create(serie, tipo, secuencia string) error {
 
-	if err := dataValidation(&serie, &tipo, []string{secuencia}); err != nil {
+	if err := dataValidation(&serie, &tipo, &secuencia); err != nil {
 		return err
 	}
 
@@ -27,37 +27,6 @@ func Create(serie, tipo, secuencia string) error {
 	}
 
 	fmt.Println("usuario: ", ncf.ID)
-	fmt.Println("Filas: ", result.RowsAffected)
-
-	return nil
-}
-
-func CreateMany(serie, tipo string, secuencias []string) error {
-	ncfs := make([]dbconnection.NCF, 0)
-
-	if err := dataValidation(&serie, &tipo, secuencias); err != nil {
-		return err
-	}
-
-	for _, secuencia := range secuencias {
-
-		ncfs = append(ncfs, dbconnection.NCF{
-			Serie:     serie,
-			Tipo:      tipo,
-			Secuencia: secuencia,
-		})
-	}
-
-	result := dbconnection.Db.Create(&ncfs)
-
-	if result.Error != nil {
-		return result.Error
-	}
-
-	for _, v := range ncfs {
-		fmt.Println("usuario: ", v.ID)
-	}
-
 	fmt.Println("Filas: ", result.RowsAffected)
 
 	return nil
@@ -95,7 +64,7 @@ func GetById(id uint) (dbconnection.NCF, error) {
 func Update(serie, tipo, secuencia string, id uint) error {
 	ncf := new(dbconnection.NCF)
 
-	if err := dataValidation(&serie, &tipo, []string{secuencia}); err != nil {
+	if err := dataValidation(&serie, &tipo, &secuencia); err != nil {
 		return err
 	}
 
@@ -139,17 +108,15 @@ func Delete(id uint) error {
 	return nil
 }
 
-func dataValidation(serie, tipo *string, secuencia []string) error {
+func dataValidation(serie, tipo, secuencia *string) error {
 	*serie = strings.ToUpper(*serie)
 
 	if len(*tipo) != 2 {
 		return errors.New("solo se pueden ingresar 2 digitos en el tipo")
 	}
 
-	for _, v := range secuencia {
-		if len(v) != 8 {
-			return errors.New("solo se pueden ingresar 8 digitos en la secuencia")
-		}
+	if len(*secuencia) != 8 {
+		return errors.New("solo se pueden ingresar 8 digitos en la secuencia")
 	}
 
 	return nil
