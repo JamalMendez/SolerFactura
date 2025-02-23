@@ -2,6 +2,7 @@ import "../styles/Clientes.css";
 import Table from "../components/Table";
 import HeaderGroup from "../components/HeaderGroup";
 import Modal from "../components/Modal";
+import UseStorage from '../hooks/UseStorage';
 import { Button } from "@mui/material";
 import { useState } from "react";
 import Alert from "@mui/joy/Alert";
@@ -13,12 +14,17 @@ const columnas = ["Cedula", "Nombre", "E-mail", "Direccion", "Telefono", "Celula
 const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
 
 export default function Clientes() {
+  const [
+    insertarLocalStorage,
+    retornarLocalStorage
+  ] = UseStorage();
+
   const [isModal, setIsModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [id, setId] = useState(1);
   const [idSeleccionado, setIdSeleccionado] = useState(null);
 
-  const [rows, setRows] = useState([]);
+  const [rows, setRows] = useState(retornarLocalStorage('tablaClientes') || []);
   const [palabraFiltro, setPalabraFiltro] = useState(''); 
   const [busqueda, setBusqueda] = useState([]); 
   const [cedula, setCedula] = useState("");
@@ -83,22 +89,27 @@ export default function Clientes() {
     setCelular("");
 
     if (!isEditing) {
-      setRows((rows) => [
-        {
-          id,
-          cedula,
-          nombre,
-          email,
-          direccion,
-          telefono,
-          celular,
-        },
-        ...rows,
-      ]);
-      setId((id) => id + 1);
-    } else {
-      setRows((rows) =>
-        rows.map((row, i) =>
+      setRows((rows) => {
+          const nuevasRows = [
+            {
+              id,
+              cedula,
+              nombre,
+              email,
+              direccion,
+              telefono,
+              celular,
+            },
+            ...rows,
+          ]
+          insertarLocalStorage('tablaClientes', nuevasRows);
+          return nuevasRows;
+        });
+        setId((id) => id + 1);
+      }
+      else {
+      setRows((rows) =>{
+        const nuevasRows = rows.map((row, i) =>
           i === idSeleccionado
             ? {
                 ...row,
@@ -111,7 +122,12 @@ export default function Clientes() {
               }
             : row
         )
+        insertarLocalStorage('tablaClientes', nuevasRows)
+        return nuevasRows;
+      }
       );
+      console.log(rows)
+      insertarLocalStorage('tablaClientes', rows)
       setIsEditing(false);
     }
   }

@@ -8,6 +8,7 @@ import Alert from "@mui/joy/Alert";
 import CamposProductos from "../components/CamposProductos";
 import ModalConfirmacion from "../components/ModalConfirmacion";
 import useModal from "../hooks/UseModal";
+import UseStorage from "../hooks/UseStorage";
 
 const columnas = ["ID", "Nombre", "Costo", "Tipo de producto"];
 
@@ -16,8 +17,9 @@ export default function Productos() {
   const [isEditing, setIsEditing] = useState(false);
   const [id, setId] = useState(1);
   const [idSeleccionado, setIdSeleccionado] = useState(null);
+  const [insertarLocalStorage, retornarLocalStorage] = UseStorage();
 
-  const [rows, setRows] = useState([]);
+  const [rows, setRows] = useState(retornarLocalStorage('tablaProductos') || []);
   const [palabraFiltro, setPalabraFiltro] = useState(''); 
   const [busqueda, setBusqueda] = useState([]); 
   const [nombre, setNombre] = useState("");
@@ -67,19 +69,23 @@ export default function Productos() {
     setTipoProducto("");
 
     if (!isEditing) {
-      setRows((rows) => [
-        {
-          id,
-          nombre,
-          costo,
-          tipodeproducto: tipoProducto,
-        },
-        ...rows,
-      ]);
+      setRows((rows) => {
+        const nuevasRows = [
+          {
+            id,
+            nombre,
+            costo,
+            tipodeproducto: tipoProducto,
+          },
+          ...rows,
+        ]
+        insertarLocalStorage('tablaProductos', nuevasRows)
+        return nuevasRows;
+      });
       setId((id) => id + 1);
     } else {
-      setRows((rows) =>
-        rows.map((row, i) =>
+      setRows((rows) =>{
+        const nuevasRows = rows.map((row, i) =>
           i === idSeleccionado
             ? {
                 ...row,
@@ -89,6 +95,9 @@ export default function Productos() {
               }
             : row
         )
+        insertarLocalStorage('tablaProductos', nuevasRows);
+        return nuevasRows;
+      }
       );
       setIsEditing(false);
     }

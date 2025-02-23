@@ -8,6 +8,7 @@ import Alert from "@mui/joy/Alert";
 import CamposFactura from "../components/CamposFactura";
 import ModalConfirmacion from "../components/ModalConfirmacion";
 import useModal from "../hooks/UseModal";
+import UseStorage from "../hooks/UseStorage";
 
 const columnas = [
   "ID",
@@ -29,8 +30,9 @@ export default function Factura() {
   const [isEditing, setIsEditing] = useState(false);
   const [id, setId] = useState(1);
   const [idSeleccionado, setIdSeleccionado] = useState(null);
+  const [insertarLocalStorage, retornarLocalStorage] = UseStorage();
 
-  const [rows, setRows] = useState([]);
+  const [rows, setRows] = useState(retornarLocalStorage('tablaFacturas') || []);
   const [palabraFiltro, setPalabraFiltro] = useState(''); 
   const [busqueda, setBusqueda] = useState([]); 
   const [nombre, setNombre] = useState("");
@@ -46,6 +48,7 @@ export default function Factura() {
     setIsModalConfirmacion,
     cancelarEliminacion
   ] = useModal();
+
 
   function showModal(id) {
     setNombre("");
@@ -74,20 +77,24 @@ export default function Factura() {
     setFechaVencimiento("");
 
     if (!isEditing) {
-      setRows((rows) => [
-        {
-          id,
-          nombre,
-          descripcion,
-          fechacreacion: fechaCreacion,
-          fechavencimiento: fechaVencimiento,
-        },
-        ...rows,
-      ]);
+      setRows((rows) => {
+        const nuevasRows = [
+          {
+            id,
+            nombre,
+            descripcion,
+            fechacreacion: fechaCreacion,
+            fechavencimiento: fechaVencimiento,
+          },
+          ...rows,
+        ];
+        insertarLocalStorage('tablaFacturas', nuevasRows); // Guarda el nuevo array
+        return nuevasRows; // Retorna el nuevo array para actualizar el estado
+      });
       setId((id) => id + 1);
     } else {
-      setRows((rows) =>
-        rows.map((row, i) =>
+      setRows((rows) => {
+        const nuevasRows = rows.map((row, i) =>
           i === idSeleccionado
             ? {
                 ...row,
@@ -96,14 +103,20 @@ export default function Factura() {
                 fechavencimiento: fechaVencimiento,
               }
             : row
-        )
-      );
+        );
+        insertarLocalStorage('tablaFacturas', nuevasRows); // Guarda el array actualizado
+        return nuevasRows; // Retorna el array actualizado
+      });
       setIsEditing(false);
     }
   }
 
   function eliminarElemento(id) {
-    setRows((rows) => rows.filter((row) => row.id !== id));
+    setRows((rows) => {
+      const nuevasRows = rows.filter((row) => row.id !== id);
+      insertarLocalStorage('tablaFacturas', nuevasRows); // Guarda el array actualizado
+      return nuevasRows; // Retorna el array actualizado
+    });
   }
 
   function editarFila(id) {

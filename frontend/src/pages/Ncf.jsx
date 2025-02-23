@@ -4,10 +4,11 @@ import HeaderGroup from "../components/HeaderGroup";
 import Modal from "../components/Modal";
 import { useState } from "react";
 import CamposNcf from "../components/CamposNcf";
-import { Button, tablePaginationClasses } from "@mui/material";
+import { Button } from "@mui/material";
 import useModal from "../hooks/UseModal";
 import ModalConfirmacion from "../components/ModalConfirmacion";
 import Alert from "@mui/joy/Alert";
+import UseStorage from "../hooks/UseStorage"; // Importa el hook UseStorage
 
 const columnas = ["Tipo", "Secuencia", "Serie", "Activo", "Fecha De Creacion"];
 
@@ -24,8 +25,9 @@ export default function Ncf() {
   const [isEditing, setIsEditing] = useState(false);
   const [id, setId] = useState(1);
   const [idSeleccionado, setIdSeleccionado] = useState(null);
+  const [insertarLocalStorage, retornarLocalStorage] = UseStorage(); // Usa el hook UseStorage
 
-  const [rows, setRows] = useState([]);
+  const [rows, setRows] = useState(retornarLocalStorage('tablaNcf') || []);
   const [palabraFiltro, setPalabraFiltro] = useState(''); 
   const [busqueda, setBusqueda] = useState([]); 
   const [tipo, setTipo] = useState("");
@@ -42,8 +44,8 @@ export default function Ncf() {
     cancelarEliminacion
   ] = useModal();
 
-  function showModal(id) {
 
+  function showModal(id) {
     setIsModal(true);
     setTipo("");
     setSecuencia("");
@@ -54,8 +56,8 @@ export default function Ncf() {
       setIdSeleccionado(id);
       setIsEditing(true);
       editarFila(id);
-    }else{
-      //GENERAR SECUENCIA
+    } else {
+      // GENERAR SECUENCIA
       generarSecuencia();
     }
   }
@@ -67,28 +69,36 @@ export default function Ncf() {
       return;
     }
 
-    if(!regex.test(secuencia)){
+    if (!regex.test(secuencia)) {
       setMensajeAlerta("Secuencial no valido");
       setIsError(true);
       return;
     }
 
+    setIsModal(false);
+    setTipo("");
+    setSecuencia("");
+    setSerie("");
+
     if (!isEditing) {
-      generarSecuencia(secuencia);
-      setRows((rows) => [
-        {
-          id,
-          tipo,
-          secuencia,
-          serie,
-          fechacreacion: fechaCreacion,
-        },
-        ...rows,
-      ]);
+      setRows((rows) => {
+        const nuevasRows = [
+          {
+            id,
+            tipo,
+            secuencia,
+            serie,
+            fechacreacion: fechaCreacion,
+          },
+          ...rows,
+        ];
+        insertarLocalStorage('tablaNcf', nuevasRows); // Guarda el nuevo array
+        return nuevasRows; // Retorna el nuevo array para actualizar el estado
+      });
       setId((id) => id + 1);
     } else {
-      setRows((rows) =>
-        rows.map((row, i) =>
+      setRows((rows) => {
+        const nuevasRows = rows.map((row, i) =>
           i === idSeleccionado
             ? {
                 ...row,
@@ -98,42 +108,43 @@ export default function Ncf() {
                 fechacreacion: fechaCreacion,
               }
             : row
-        )
-      );
+        );
+        insertarLocalStorage('tablaNcf', nuevasRows); // Guarda el array actualizado
+        return nuevasRows; // Retorna el array actualizado
+      });
       setIsEditing(false);
     }
-
-    setIsModal(false);
-    setTipo("");
-    setSecuencia("");
-    setSerie("");
   }
 
-  function generarSecuencia(secuencial){
+  function generarSecuencia(secuencial) {
     let numeros = '';
     let tomarUltimoSecuencial = JSON.parse(localStorage.getItem('secuencial'));
 
-    //SI NO HAY UN SECUENCIAL
-    if(!tomarUltimoSecuencial){
+    // SI NO HAY UN SECUENCIAL
+    if (!tomarUltimoSecuencial) {
       setSecuencia("00000001");
-      localStorage.setItem('secuencial', JSON.stringify('00000001'))
+      localStorage.setItem('secuencial', JSON.stringify('00000001'));
       return;
     }
 
-    //SI HAY SECUENCIAL
+    // SI HAY SECUENCIAL
     tomarUltimoSecuencial.split('').forEach(num => Number(num) > 0 ? numeros += num : '');
     numeros = Number(numeros) + 1;
 
     const secuencialActualizado = tomarUltimoSecuencial.slice(0, -numeros.toString().length) + numeros;
     setSecuencia(secuencialActualizado);
 
-    if(secuencial){
-      localStorage.setItem('secuencial', JSON.stringify(secuencial))
+    if (secuencial) {
+      localStorage.setItem('secuencial', JSON.stringify(secuencial));
     }
   }
 
   function eliminarElemento(id) {
-    setRows((rows) => rows.filter((row) => row.id !== id));
+    setRows((rows) => {
+      const nuevasRows = rows.filter((row) => row.id !== id);
+      insertarLocalStorage('tablaNcf', nuevasRows); // Guarda el array actualizado
+      return nuevasRows; // Retorna el array actualizado
+    });
   }
 
   function editarFila(id) {
@@ -154,9 +165,8 @@ export default function Ncf() {
       const filtro = rows.filter(row =>
         Object.values(row).some(elemento =>
           String(elemento).toLowerCase().includes(palabraBusqueda.toLowerCase())
-        )
-      );
-      setBusqueda(filtro); // Actualizar los resultados de búsqueda
+      ));
+      setBusqueda(filtro) // Actualizar los resultados de búsqueda
     }
   }
 
