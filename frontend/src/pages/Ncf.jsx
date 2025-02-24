@@ -26,15 +26,15 @@ export default function Ncf() {
   const [idSeleccionado, setIdSeleccionado] = useState(null);
   const [insertarLocalStorage, retornarLocalStorage, insertarUltimoId, retornarUltimoId] = UseStorage();
 
-  const nombreTabla = "tablaNcf"; 
+  const nombreTabla = "tablaNcf";
   const [rows, setRows] = useState(retornarLocalStorage(nombreTabla) || []);
-  const [palabraFiltro, setPalabraFiltro] = useState(''); 
-  const [busqueda, setBusqueda] = useState([]); 
+  const [palabraFiltro, setPalabraFiltro] = useState('');
+  const [busqueda, setBusqueda] = useState([]);
   const [tipo, setTipo] = useState("");
   const [secuencia, setSecuencia] = useState("");
   const [serie, setSerie] = useState("");
 
-  const [id, setId] = useState(retornarUltimoId(nombreTabla)); 
+  const [id, setId] = useState(retornarUltimoId(nombreTabla));
 
   const [
     isError,
@@ -58,7 +58,7 @@ export default function Ncf() {
       setIsEditing(true);
       editarFila(id);
     } else {
-      // GENERAR SECUENCIA
+      // GENERAR SECUENCIA (solo muestra, no guarda en localStorage)
       generarSecuencia();
     }
   }
@@ -93,9 +93,11 @@ export default function Ncf() {
           },
           ...rows,
         ];
-        insertarLocalStorage(nombreTabla, nuevasRows); 
-        insertarUltimoId(nombreTabla, id + 1); 
-        return nuevasRows; 
+        // Guardar el secuencial en localStorage solo cuando se confirma la creación
+        localStorage.setItem('secuencial', JSON.stringify(secuencia));
+        insertarLocalStorage(nombreTabla, nuevasRows);
+        insertarUltimoId(nombreTabla, id + 1);
+        return nuevasRows;
       });
       setId((id) => id + 1);
     } else {
@@ -111,41 +113,35 @@ export default function Ncf() {
               }
             : row
         );
-        insertarLocalStorage(nombreTabla, nuevasRows); 
-        return nuevasRows; 
+        insertarLocalStorage(nombreTabla, nuevasRows);
+        return nuevasRows;
       });
       setIsEditing(false);
     }
   }
 
-  function generarSecuencia(secuencial) {
-    let numeros = '';
+  function generarSecuencia() {
     let tomarUltimoSecuencial = JSON.parse(localStorage.getItem('secuencial'));
 
     // SI NO HAY UN SECUENCIAL
     if (!tomarUltimoSecuencial) {
-      setSecuencia("00000001");
-      localStorage.setItem('secuencial', JSON.stringify('00000001'));
+      const nuevoSecuencial = "00000001";
+      setSecuencia(nuevoSecuencial); // Solo muestra, no guarda en localStorage
       return;
     }
 
     // SI HAY SECUENCIAL
-    tomarUltimoSecuencial.split('').forEach(num => Number(num) > 0 ? numeros += num : '');
-    numeros = Number(numeros) + 1;
+    const numeros = String(Number(tomarUltimoSecuencial) + 1);
+    const secuencialActualizado = numeros.padStart(tomarUltimoSecuencial.length, '0');
 
-    const secuencialActualizado = tomarUltimoSecuencial.slice(0, -numeros.toString().length) + numeros;
-    setSecuencia(secuencialActualizado);
-
-    if (secuencial) {
-      localStorage.setItem('secuencial', JSON.stringify(secuencial));
-    }
+    setSecuencia(secuencialActualizado); // Solo muestra, no guarda en localStorage
   }
 
   function eliminarElemento(id) {
     setRows((rows) => {
       const nuevasRows = rows.filter((row) => row.id !== id);
       insertarLocalStorage(nombreTabla, nuevasRows);
-      return nuevasRows; 
+      return nuevasRows;
     });
   }
 
@@ -159,16 +155,17 @@ export default function Ncf() {
   }
 
   function filtrarTabla(palabraBusqueda) {
-    setPalabraFiltro(palabraBusqueda); 
+    setPalabraFiltro(palabraBusqueda);
 
     if (palabraBusqueda === '') {
-      setBusqueda([]); 
+      setBusqueda([]);
     } else {
       const filtro = rows.filter(row =>
         Object.values(row).some(elemento =>
           String(elemento).toLowerCase().includes(palabraBusqueda.toLowerCase())
-      ));
-      setBusqueda(filtro); 
+        )
+      );
+      setBusqueda(filtro);
     }
   }
 
@@ -179,7 +176,7 @@ export default function Ncf() {
         <HeaderGroup
           nombreBtn={"NCF"}
           onShowModal={showModal}
-          onFiltrarTabla={filtrarTabla} 
+          onFiltrarTabla={filtrarTabla}
         />
       </header>
 
