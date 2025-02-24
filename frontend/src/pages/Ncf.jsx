@@ -58,7 +58,6 @@ export default function Ncf() {
       setIsEditing(true);
       editarFila(id);
     } else {
-      // GENERAR SECUENCIA (solo muestra, no guarda en localStorage)
       generarSecuencia();
     }
   }
@@ -89,11 +88,11 @@ export default function Ncf() {
             tipo,
             secuencia,
             serie,
-            fechacreacion: fechaCreacion,
+            activo: true ? '✅' : '❌',
+            fechadecreacion: fechaCreacion,
           },
           ...rows,
         ];
-        // Guardar el secuencial en localStorage solo cuando se confirma la creación
         localStorage.setItem('secuencial', JSON.stringify(secuencia));
         insertarLocalStorage(nombreTabla, nuevasRows);
         insertarUltimoId(nombreTabla, id + 1);

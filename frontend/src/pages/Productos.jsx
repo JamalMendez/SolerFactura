@@ -25,6 +25,15 @@ export default function Productos() {
   const [nombre, setNombre] = useState("");
   const [costo, setCosto] = useState("");
   const [tipoProducto, setTipoProducto] = useState("");
+  // Lista de opciones para el Autocomplete
+  const [opcionesTipoProducto, setOpcionesTipoProducto] = useState(
+    retornarLocalStorage('opcionesTipoProducto') ||
+    [
+      { nombre: "eléctrico" },
+      { nombre: "mecánico" },
+      { nombre: "digital" },
+    ]
+  )
 
   const [id, setId] = useState(retornarUltimoId(nombreTabla)); 
 
@@ -63,6 +72,17 @@ export default function Productos() {
       setMensajeAlerta("Producto no tiene costo");
       setIsError(true);
       return;
+    }
+
+    const todosTiposDiferentes = opcionesTipoProducto.every(producto => producto.nombre !== tipoProducto);
+
+    if(todosTiposDiferentes){
+      setOpcionesTipoProducto((productos) =>{
+        const opciones = [...productos, {nombre: tipoProducto}];
+        insertarLocalStorage('opcionesTipoProducto', opciones)
+        return opciones;
+        }
+      )
     }
 
     setIsModal(false);
@@ -137,6 +157,16 @@ export default function Productos() {
     }
   }
 
+  function eliminarTipoProducto(index){
+    const listaActualizada = opcionesTipoProducto.filter((_, i) => i !== index);
+    setOpcionesTipoProducto(listaActualizada);
+    insertarLocalStorage('opcionesTipoProducto', listaActualizada);
+
+    setTimeout(() => {
+      setTipoProducto('')
+    }, .2);
+  }
+
   return (
     <div className="productos-container">
       <header className="productos-header">
@@ -176,6 +206,8 @@ export default function Productos() {
             setCosto={setCosto}
             tipoProducto={tipoProducto}
             setTipoProducto={setTipoProducto}
+            opcionesTipoProducto={opcionesTipoProducto}
+            onEliminarTipoProducto={eliminarTipoProducto}
           />
           <Button
             className="productos-button"

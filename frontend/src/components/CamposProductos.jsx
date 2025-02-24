@@ -8,14 +8,9 @@ export default function CamposProductos({
   setCosto,
   tipoProducto,
   setTipoProducto,
+  opcionesTipoProducto,
+  onEliminarTipoProducto
 }) {
-
-  // Lista de opciones para el Autocomplete
-  const opcionesTipoProducto = [
-    { nombre: "eléctrico" },
-    { nombre: "mecánico" },
-    { nombre: "digital" },
-  ];
 
   return (
     <div className="textfields-container">
@@ -37,21 +32,32 @@ export default function CamposProductos({
 
       <Autocomplete
         options={opcionesTipoProducto}
-        getOptionLabel={(option) =>
-          typeof option === "string" ? option : option.nombre
+        getOptionLabel={(option) => 
+          typeof option === "string" ? option : option.nombre // Devuelve solo el nombre como string
         }
         value={tipoProducto}
+        onInputChange={(e, valor) => {
+          setTipoProducto(valor); // Actualiza el valor cuando el usuario escribe
+        }}
         onChange={(e, valor) => {
           if (valor && typeof valor === "object") {
-            setTipoProducto(valor.nombre); 
-          } else {
-            setTipoProducto(valor || ""); 
+            setTipoProducto(valor.nombre); // Actualiza el valor cuando se selecciona una opción
           }
         }}
         renderInput={(params) => (
-          <TextField {...params} label="Tipo de producto"/>
+          <TextField {...params} label="Tipo de producto" />
         )}
-        freeSolo 
+        renderOption={(props, option) => (
+          <li {...props} key={option.nombre}>
+            <div className="option-type-product" style={{ display: "flex", justifyContent: 'space-between', width: '100%' }}>
+              {typeof option === "string" ? option : <p>{option.nombre}</p>}
+              <p onClick={() => {
+                onEliminarTipoProducto(props['data-option-index']);
+              }}>❌</p>
+            </div>
+          </li>
+        )}
+        freeSolo
         fullWidth
       />
     </div>
