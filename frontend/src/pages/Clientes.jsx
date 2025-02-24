@@ -111,6 +111,7 @@ export default function Clientes() {
         return nuevasRows;
       });
       setId((id) => id + 1);
+      
     } else {
       setRows((rows) => {
         const nuevasRows = rows.map((row, i) =>

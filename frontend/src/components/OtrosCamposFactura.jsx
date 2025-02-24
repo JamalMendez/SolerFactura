@@ -45,12 +45,19 @@ export default function OtrosCamposFactura({ onChange }) {
 
                 <FormControl>
                     <label>Gasto de Envio (opcional):</label>
-                    <TextField type="number" />
+                    <TextField 
+                        type="number" 
+                        name="gastoEnvio"
+                        onChange={(e) => onChange(e.target.name, e.target.value)}
+                    />
                 </FormControl>
 
                 <FormControl>
                     <label>Medio de pago (opcional):</label>
-                    <TextField/>
+                    <TextField
+                        name="medioPago"
+                        onChange={(e) => onChange(e.target.name, e.target.value)}
+                    />
                 </FormControl>
             </div>
         </>
