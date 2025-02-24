@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/Menu.css";
 
 import MenuElement from "./MenuElement";
@@ -6,6 +7,7 @@ export default function Menu() {
   const menusTitles = ["Factura", "NCF", "Clientes", "Productos"];
   const [active, setActive] = useState(null);
   const [menuActive, setMenuActive] = useState(true);
+  const navigate = useNavigate();
 
   return (
     <>
@@ -28,6 +30,7 @@ export default function Menu() {
           width={"200px"}
           src="\images\R.electro solar logo (3).png"
           alt="Electro Solar Completo"
+          onClick={() => navigate('/')}
         />
 
         {/* PARA PANTALLAS PEQUEÑAS */}

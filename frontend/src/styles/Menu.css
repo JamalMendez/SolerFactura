@@ -52,6 +52,7 @@
 
 .nav-menu img{
     margin-top: 35px;
+    cursor: pointer;
 }
 
 .container-menu-element{

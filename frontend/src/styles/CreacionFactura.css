@@ -3,6 +3,7 @@
     width: 100%;
     justify-content: space-around;
     max-height: 90vh;
+    margin-top: 24px;
 }
 
 .inputs-factura{
@@ -20,4 +21,11 @@
 .visualizacion-factura iframe{
     width: 100%;
     height: 90vh;
+}
+
+.btn-home{
+    position: absolute;
+    right: 30px;
+    top: 10px;
+    cursor: pointer;
 }

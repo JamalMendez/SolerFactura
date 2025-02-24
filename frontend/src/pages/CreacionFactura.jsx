@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import CamposFactura from '../components/CamposFactura';
+import {useNavigate} from 'react-router-dom';
 import { Button } from '@mui/material';
 import OtrosCamposFactura from '../components/OtrosCamposFactura';
 import '../styles/CreacionFactura.css';
@@ -8,6 +9,7 @@ import 'jspdf-autotable';
 
 export default function CreacionFactura() {
     const iframeRef = useRef(null); // Referencia al iframe
+    const navigate = useNavigate()
 
     // Estado para los datos de la factura
     const [datosFactura, setDatosFactura] = useState({
@@ -63,6 +65,7 @@ export default function CreacionFactura() {
     return (
         <>
             <div className="creacion-factura-contenedor">
+                <div onClick={() => navigate('/')} className='btn-home'><Button color="success" variant='contained'>Salir</Button></div>
                 <main className="inputs-factura">
                     <h1 style={{color: 'green'}}>Datos de Factura</h1>
                     {/* Campos de la factura */}
