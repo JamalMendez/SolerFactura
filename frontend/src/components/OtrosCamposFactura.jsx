@@ -1,6 +1,7 @@
 import Select from "@mui/material/Select";
 import FormControl from "@mui/material/FormControl";
 import MenuItem from "@mui/material/MenuItem";
+import { TextField } from "@mui/material";
 
 export default function OtrosCamposFactura({ onChange }) {
     return (
@@ -40,6 +41,16 @@ export default function OtrosCamposFactura({ onChange }) {
                         <MenuItem value="NCF 2">NCF 2</MenuItem>
                         <MenuItem value="NCF 3">NCF 3</MenuItem>
                     </Select>
+                </FormControl>
+
+                <FormControl>
+                    <label>Gasto de Envio (opcional):</label>
+                    <TextField type="number" />
+                </FormControl>
+
+                <FormControl>
+                    <label>Medio de pago (opcional):</label>
+                    <TextField/>
                 </FormControl>
             </div>
         </>
