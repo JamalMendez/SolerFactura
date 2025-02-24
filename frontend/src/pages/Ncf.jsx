@@ -58,7 +58,7 @@ export default function Ncf() {
       setIsEditing(true);
       editarFila(id);
     } else {
-      // GENERAR SECUENCIA
+      // GENERAR SECUENCIA (solo muestra, no guarda en localStorage)
       generarSecuencia();
     }
   }
@@ -74,11 +74,6 @@ export default function Ncf() {
       setMensajeAlerta("Secuencial no valido");
       setIsError(true);
       return;
-    }
-
-    // Si el secuencial es ingresado manualmente, actualizamos localStorage
-    if (secuencia && regex.test(secuencia)) {
-      localStorage.setItem('secuencial', JSON.stringify(secuencia));
     }
 
     setIsModal(false);
@@ -98,6 +93,8 @@ export default function Ncf() {
           },
           ...rows,
         ];
+        // Guardar el secuencial en localStorage solo cuando se confirma la creación
+        localStorage.setItem('secuencial', JSON.stringify(secuencia));
         insertarLocalStorage(nombreTabla, nuevasRows);
         insertarUltimoId(nombreTabla, id + 1);
         return nuevasRows;
@@ -129,8 +126,7 @@ export default function Ncf() {
     // SI NO HAY UN SECUENCIAL
     if (!tomarUltimoSecuencial) {
       const nuevoSecuencial = "00000001";
-      setSecuencia(nuevoSecuencial);
-      localStorage.setItem('secuencial', JSON.stringify(nuevoSecuencial));
+      setSecuencia(nuevoSecuencial); // Solo muestra, no guarda en localStorage
       return;
     }
 
@@ -138,8 +134,7 @@ export default function Ncf() {
     const numeros = String(Number(tomarUltimoSecuencial) + 1);
     const secuencialActualizado = numeros.padStart(tomarUltimoSecuencial.length, '0');
 
-    setSecuencia(secuencialActualizado);
-    localStorage.setItem('secuencial', JSON.stringify(secuencialActualizado));
+    setSecuencia(secuencialActualizado); // Solo muestra, no guarda en localStorage
   }
 
   function eliminarElemento(id) {
