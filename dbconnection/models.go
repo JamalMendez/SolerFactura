@@ -38,31 +38,32 @@ type Cliente struct {
 
 type Producto struct {
 	gorm.Model
-	TPR_id uint    `gorm:"not null"`
-	Costo  float32 `gorm:"not null"`
+	TPR_id      uint   `gorm:"not null"`
+	Descripcion string `gorm:"unique;not null;size:150"`
+	Costo       uint   `gorm:"not null"`
 }
 
 type Factura struct {
 	gorm.Model
-	NCF_id        uint    `gorm:"not null"`
-	CLI_id        uint    `gorm:"not null"`
-	TPO_id        uint    `gorm:"not null"`
-	Nombre        string  `gorm:"unique;size:150"`
-	CostoSubtotal float32 `gorm:"not null"`
-	CostoTotal    float32 `gorm:"not null"`
-	Descuento     float32
-	ITBIS         float32 `gorm:"not null"`
-	Envio         float32
+	NCF_id        uint   `gorm:"not null"`
+	CLI_id        uint   `gorm:"not null"`
+	TPO_id        uint   `gorm:"not null"`
+	Nombre        string `gorm:"unique;size:150"`
+	CostoSubtotal uint   `gorm:"not null"`
+	CostoTotal    uint   `gorm:"not null"`
+	Descuento     uint
+	ITBIS         uint `gorm:"not null"`
+	Envio         uint
 	Descripcion   string     `gorm:"type:text"`
 	Productos     []Producto `gorm:"many2many:factura_descs"`
 }
 
 type FacturaDesc struct {
-	FacId         uint    `gorm:"primaryKey"`
-	ProId         uint    `gorm:"primaryKey"`
-	CostoUnitario float32 `gorm:"not null"`
-	Cantidad      uint    `gorm:"not null;default:1"`
-	TotalUnitario float32 `gorm:"not null"`
+	FacId         uint `gorm:"primaryKey"`
+	ProId         uint `gorm:"primaryKey"`
+	CostoUnitario uint `gorm:"not null"`
+	Cantidad      uint `gorm:"not null;default:1"`
+	TotalUnitario uint `gorm:"not null"`
 }
 
 func migration(db *gorm.DB) {

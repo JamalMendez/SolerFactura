@@ -81,9 +81,17 @@ func Update(rnc_cedula, nombre, apellido, email, direccion, telefono, celular st
 		return result.Error
 	}
 
+	if result.RowsAffected == 0 {
+		return errors.New("no se encontro ningun producto")
+	}
+
 	dataUpdateValidation(&rnc_cedula, &nombre, &apellido, &email, &direccion, &telefono, &celular, cliente)
 
-	dbconnection.Db.Save(cliente)
+	result = dbconnection.Db.Save(cliente)
+	
+	if result.Error != nil {
+		return result.Error
+	}
 
 	return nil
 }
@@ -97,7 +105,15 @@ func Delete(id uint) error {
 		return result.Error
 	}
 
-	dbconnection.Db.Delete(cliente)
+	if result.RowsAffected == 0 {
+		return errors.New("no se encontro ningun producto")
+	}
+
+	result = dbconnection.Db.Delete(cliente)
+
+	if result.Error != nil {
+		return result.Error
+	}
 
 	return nil
 }
