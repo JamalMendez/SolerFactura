@@ -3,7 +3,6 @@ import Textarea from "@mui/joy/Textarea";
 import FormControl from "@mui/joy/FormControl";
 
 export default function CamposFactura({
-  cantidad,
   descripcion,
   precioUnitario,
   total,
@@ -11,12 +10,6 @@ export default function CamposFactura({
 }) {
   return (
     <div className="textfields-container">
-      <TextField
-        label="Cantidad"
-        type="number"
-        value={cantidad}
-        onChange={(e) => onChange("cantidad", e.target.value)}
-      />
 
       <Textarea
         placeholder="Descripción"
