@@ -11,27 +11,13 @@ export default function CamposFactura({
   return (
     <div className="textfields-container">
 
-      <Textarea
-        placeholder="Descripción"
-        value={descripcion}
-        minRows={2}
-        maxRows={4}
-        onChange={(e) => onChange("descripcion", e.target.value)}
-      />
-
-      <TextField
-        label="Precio Unitario"
-        type="text"
-        value={precioUnitario}
-        onChange={(e) => onChange("precioUnitario", e.target.value)}
-      />
-
-      <TextField
-        label="Total"
-        type="text"
-        value={total}
-        onChange={(e) => onChange("total", e.target.value)}
-      />
+      <FormControl>
+        <label>Fecha Vencimiento:</label>
+        <TextField
+          type="date"
+          onChange={(e) => onChange("descripcion", e.target.value)}
+        />
+      </FormControl>
     </div>
   );
 }

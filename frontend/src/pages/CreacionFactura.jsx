@@ -4,18 +4,20 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
 import OtrosCamposFactura from "../components/OtrosCamposFactura";
 import "../styles/CreacionFactura.css";
-import { pdf, Document, Page } from "@react-pdf/renderer";
-import MyDocument from "../PDF/SolerPdf"; // Importa el componente del PDF
+import { pdf } from "@react-pdf/renderer";
+import MyDocument from "../PDF/SolerPdf";
+import UseStorage from "../hooks/UseStorage";
 
 export default function CreacionFactura() {
-  const iframeRef = useRef(null); // Referencia al iframe
+  const iframeRef = useRef(null);
   const navigate = useNavigate();
+  const [insertarLocalStorage, retornarLocalStorage] = UseStorage();
 
   // Estado para los datos de la factura
   const [datosFactura, setDatosFactura] = useState({
-    descripcion: "Inversor Fronius 8 KW Canadian Solar",
-    precioUnitario: "RD$55,848.00",
-    total: "RD$55,848.00",
+    descripcion: "",
+    precioUnitario: "",
+    total: "",
     cliente: "Cliente 1",
     producto: "Producto 1",
     ncf: "NCF 1",
@@ -23,8 +25,19 @@ export default function CreacionFactura() {
     medioPago: "",
   });
 
+  // Estado para el cliente seleccionado
+  const [clienteSeleccionado, setClienteSeleccionado] = useState(null);
+
+  // Obtener los clientes desde el localStorage
+  const clientes = retornarLocalStorage("tablaClientes") || [];
+
   // Función para manejar cambios en los campos
   const handleChange = (name, value) => {
+    if (name === "cliente") {
+      // Buscar el cliente seleccionado
+      const cliente = clientes.find((c) => c.nombre === value);
+      setClienteSeleccionado(cliente || null);
+    }
     setDatosFactura((prevState) => ({
       ...prevState,
       [name]: value,
@@ -33,7 +46,9 @@ export default function CreacionFactura() {
 
   // Función para generar el PDF
   const generarPDF = async () => {
-    const blob = await pdf(<MyDocument datosFactura={datosFactura} />).toBlob();
+    const blob = await pdf(
+      <MyDocument datosFactura={datosFactura} clienteSeleccionado={clienteSeleccionado} />
+    ).toBlob();
     const pdfUrl = URL.createObjectURL(blob);
     iframeRef.current.src = pdfUrl;
   };
@@ -41,7 +56,7 @@ export default function CreacionFactura() {
   // useEffect para generar el PDF automáticamente
   useEffect(() => {
     generarPDF();
-  }, [datosFactura]); // Se ejecuta cada vez que datosFactura cambia
+  }, [datosFactura, clienteSeleccionado]);
 
   return (
     <>
@@ -52,17 +67,15 @@ export default function CreacionFactura() {
           </Button>
         </div>
         <main className="inputs-factura">
-          <h1 style={{ color: "green" }}>Datos de Factura</h1>
           {/* Campos de la factura */}
+          <h1 style={{ color: "green" }}>Campos de la factura</h1>
+          <OtrosCamposFactura onChange={handleChange} clientes={clientes} />
           <CamposFactura
             descripcion={datosFactura.descripcion}
             precioUnitario={datosFactura.precioUnitario}
             total={datosFactura.total}
             onChange={handleChange}
           />
-
-          <h1 style={{ color: "green" }}>Campos de la factura</h1>
-          <OtrosCamposFactura onChange={handleChange} />
 
           <div style={{ marginTop: "20px" }}>
             <Button color="success" variant="contained">
