@@ -1,6 +1,7 @@
 package tipopagocontroller
 
 import (
+	"errors"
 	"fmt"
 
 	"ggstudios.com/solerfactura/dbconnection"
@@ -59,11 +60,19 @@ func Update(descripcion string, id uint) error {
 		return result.Error
 	}
 
+	if result.RowsAffected == 0 {
+		return errors.New("no se encontro ningun producto")
+	}
+
 	if descripcion != "" {
 		tipoPago.Descripcion = descripcion
 	}
 
-	dbconnection.Db.Save(tipoPago)
+	result = dbconnection.Db.Save(tipoPago)
+
+	if result.Error != nil {
+		return result.Error
+	}
 
 	return nil
 }
@@ -77,7 +86,15 @@ func Delete(id uint) error {
 		return result.Error
 	}
 
-	dbconnection.Db.Delete(tipoPago)
+	if result.RowsAffected == 0 {
+		return errors.New("no se encontro ningun producto")
+	}
+
+	result = dbconnection.Db.Delete(tipoPago)
+
+	if result.Error != nil {
+		return result.Error
+	}
 
 	return nil
 }

@@ -1,6 +1,7 @@
 package tipoproductocontroller
 
 import (
+	"errors"
 	"fmt"
 
 	"ggstudios.com/solerfactura/dbconnection"
@@ -59,6 +60,10 @@ func Update(descripcion string, id uint) error {
 		return result.Error
 	}
 
+	if result.RowsAffected == 0 {
+		return errors.New("no se encontro ningun producto")
+	}
+
 	if descripcion != "" {
 		tipoProducto.Descripcion = descripcion
 	}
@@ -79,6 +84,10 @@ func Delete(id uint) error {
 
 	if result.Error != nil {
 		return result.Error
+	}
+
+	if result.RowsAffected == 0 {
+		return errors.New("no se encontro ningun producto")
 	}
 
 	result = dbconnection.Db.Delete(tipoProducto)

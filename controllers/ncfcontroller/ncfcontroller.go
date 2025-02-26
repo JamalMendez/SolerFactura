@@ -74,6 +74,10 @@ func Update(serie, tipo, secuencia string, id uint) error {
 		return result.Error
 	}
 
+	if result.RowsAffected == 0 {
+		return errors.New("no se encontro ningun producto")
+	}
+
 	if serie == "" {
 		serie = ncf.Serie
 	}
@@ -89,7 +93,11 @@ func Update(serie, tipo, secuencia string, id uint) error {
 	ncf.Serie = serie
 	ncf.Tipo = tipo
 	ncf.Secuencia = secuencia
-	dbconnection.Db.Save(ncf)
+	result = dbconnection.Db.Save(ncf)
+
+	if result.Error != nil {
+		return result.Error
+	}
 
 	return nil
 }
@@ -103,7 +111,15 @@ func Delete(id uint) error {
 		return result.Error
 	}
 
-	dbconnection.Db.Delete(ncf)
+	if result.RowsAffected == 0 {
+		return errors.New("no se encontro ningun producto")
+	}
+
+	result = dbconnection.Db.Delete(ncf)
+
+	if result.Error != nil {
+		return result.Error
+	}
 
 	return nil
 }
