@@ -69,7 +69,7 @@ export default function CreacionFactura() {
         </div>
         <main className="inputs-factura">
           {/* Campos de la factura */}
-          <h1 style={{ color: "green" }}>Campos de la factura</h1>
+          <h1 style={{ color: "green", marginBottom: "20px" }}>Campos de la factura</h1>
           <OtrosCamposFactura
             onChange={handleChange}
             clientes={clientes}
