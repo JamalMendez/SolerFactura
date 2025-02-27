@@ -108,18 +108,6 @@ const MyDocument = ({ datosFactura, clienteSeleccionado }) => {
           <Text>Factura</Text>
         </View>
 
-        <View>
-          <Text
-            style={{
-              width: "100vw",
-              height: "2px",
-              backgroundColor: "black",
-              top: "110px",
-              position: "absolute",
-            }}
-          ></Text>
-        </View>
-
         {/* Contenedor Flex */}
         <View style={styles.columnasHeader}>
           {/* COLUMNA IZQUIERDA */}
@@ -133,9 +121,6 @@ const MyDocument = ({ datosFactura, clienteSeleccionado }) => {
             </View>
 
             <View style={{ gap: "12px", marginRight: "20px" }}>
-              <Text></Text>
-              <Text></Text>
-              <Text></Text>
               <Text>{clienteSeleccionado?.nombre || "_____________"}</Text>
               <Text>{clienteSeleccionado?.direccion || "_____________"}</Text>
               <Text>{clienteSeleccionado?.ciudad || "_____________"}</Text>
@@ -152,12 +137,7 @@ const MyDocument = ({ datosFactura, clienteSeleccionado }) => {
               <Text>Valida</Text>
             </View>
 
-            <View style={{ gap: "9px" }}>
-              <Text></Text> 
-              <Text></Text>
-              <Text></Text>
-              <Text></Text>
-              <Text></Text>
+            <View style={{ gap: "10px" }}>
               <Text>{fechaActual}</Text>
               <Text>_____________________</Text>
               <Text>_____________________</Text>
@@ -176,12 +156,14 @@ const MyDocument = ({ datosFactura, clienteSeleccionado }) => {
           </View>
 
           {/* Filas de la tabla */}
-          <View style={styles.row}>
-            <Text style={styles.cell}>1</Text>
-            <Text style={styles.cell}>{datosFactura.descripcion}</Text>
-            <Text style={styles.cell}>{datosFactura.precioUnitario}</Text>
-            <Text style={styles.cell}>{datosFactura.total}</Text>
-          </View>
+          {datosFactura.productos.map((producto, index) => (
+            <View key={index} style={styles.row}>
+              <Text style={styles.cell}>{producto.cantidad}</Text>
+              <Text style={styles.cell}>{producto.producto}</Text>
+              <Text style={styles.cell}>{producto.precioUnitario}</Text>
+              <Text style={styles.cell}>{producto.total}</Text>
+            </View>
+          ))}
         </View>
 
         {/* Rectángulo con imagen */}

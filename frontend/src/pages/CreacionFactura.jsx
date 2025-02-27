@@ -19,7 +19,7 @@ export default function CreacionFactura() {
     precioUnitario: "",
     total: "",
     cliente: "Cliente 1",
-    producto: "Producto 1",
+    productos: [], // Array de productos seleccionados
     ncf: "NCF 1",
     gastoEnvio: "",
     medioPago: "",
@@ -28,8 +28,9 @@ export default function CreacionFactura() {
   // Estado para el cliente seleccionado
   const [clienteSeleccionado, setClienteSeleccionado] = useState(null);
 
-  // Obtener los clientes desde el localStorage
+  // Obtener los clientes y productos desde el localStorage
   const clientes = retornarLocalStorage("tablaClientes") || [];
+  const productos = retornarLocalStorage("tablaProductos") || [];
 
   // Función para manejar cambios en los campos
   const handleChange = (name, value) => {
@@ -69,7 +70,11 @@ export default function CreacionFactura() {
         <main className="inputs-factura">
           {/* Campos de la factura */}
           <h1 style={{ color: "green" }}>Campos de la factura</h1>
-          <OtrosCamposFactura onChange={handleChange} clientes={clientes} />
+          <OtrosCamposFactura
+            onChange={handleChange}
+            clientes={clientes}
+            productos={productos}
+          />
           <CamposFactura
             descripcion={datosFactura.descripcion}
             precioUnitario={datosFactura.precioUnitario}

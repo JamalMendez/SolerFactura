@@ -25,15 +25,13 @@ export default function Productos() {
   const [nombre, setNombre] = useState("");
   const [costo, setCosto] = useState("");
   const [tipoProducto, setTipoProducto] = useState("");
-  // Lista de opciones para el Autocomplete
   const [opcionesTipoProducto, setOpcionesTipoProducto] = useState(
-    retornarLocalStorage('opcionesTipoProducto') ||
-    [
+    retornarLocalStorage('opcionesTipoProducto') || [
       { nombre: "eléctrico" },
       { nombre: "mecánico" },
       { nombre: "digital" },
     ]
-  )
+  );
 
   const [id, setId] = useState(retornarUltimoId(nombreTabla)); 
 
