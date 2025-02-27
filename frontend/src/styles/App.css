@@ -14,6 +14,7 @@
 
 div.container-app{
     display: flex;
+    background-color: white;
 }
 
 div.container-routes{

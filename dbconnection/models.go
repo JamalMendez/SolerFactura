@@ -55,12 +55,10 @@ type Factura struct {
 	ITBIS         uint `gorm:"not null"`
 	Envio         uint
 	Descripcion   string     `gorm:"type:text"`
-	Productos     []Producto `gorm:"many2many:factura_descs"`
+	Productos     []Producto `gorm:"many2many:factura_descs;"`
 }
 
 type FacturaDesc struct {
-	FacId         uint `gorm:"primaryKey"`
-	ProId         uint `gorm:"primaryKey"`
 	CostoUnitario uint `gorm:"not null"`
 	Cantidad      uint `gorm:"not null;default:1"`
 	TotalUnitario uint `gorm:"not null"`
