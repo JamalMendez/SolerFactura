@@ -129,13 +129,13 @@ const MyDocument = ({
             </View>
 
             <View style={{ gap: "12px", marginRight: "20px" }}>
-              <Text></Text>
-              <Text></Text>
-              <Text></Text>
-              <Text>{clienteSeleccionado?.nombre || "_____________"}</Text>
-              <Text>{clienteSeleccionado?.direccion || "_____________"}</Text>
-              <Text>{clienteSeleccionado?.ciudad || "_____________"}</Text>
-              <Text>{clienteSeleccionado?.telefono || "_____________"}</Text>
+              <Text style={{textDecoration: "underline"}}></Text>
+              <Text style={{textDecoration: "underline"}}></Text>
+              <Text style={{textDecoration: "underline"}}></Text>
+              <Text style={{textDecoration: "underline"}}>{clienteSeleccionado?.nombre || "_____________"}</Text>
+              <Text style={{textDecoration: "underline"}}>{clienteSeleccionado?.direccion || "_____________"}</Text>
+              <Text style={{textDecoration: "underline"}}>{clienteSeleccionado?.ciudad || "_____________"}</Text>
+              <Text style={{textDecoration: "underline"}}>{clienteSeleccionado?.telefono || "_____________"}</Text>
             </View>
           </View>
 
@@ -155,7 +155,7 @@ const MyDocument = ({
               <Text></Text>
               <Text></Text>
               <Text></Text>
-              <Text>{fechaActual}</Text>
+              <Text style={{textDecoration: "underline"}}>{fechaActual}</Text>
               <Text>_____________________</Text>
               <Text>{fechaVencimiento || "_____________"}</Text>
             </View>
