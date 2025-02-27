@@ -1,12 +1,23 @@
 import React, { useEffect, useState } from "react";
-import { TextField, Select, MenuItem, FormControl, InputLabel, Button } from "@mui/material";
+import {
+  TextField,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Button,
+} from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 export default function OtrosCamposFactura({ onChange, productos, clientes }) {
-  const [productosSeleccionados, setProductosSeleccionados] = useState([]);
+  const [productosSeleccionados, setProductosSeleccionados] = useState([
+    { producto: "", cantidad: 1, precioUnitario: 0, total: 0 },
+  ]);
   const [ncf, setNcf] = useState("");
   const [gastoEnvio, setGastoEnvio] = useState("");
   const [medioPago, setMedioPago] = useState("");
   const [cliente, setCliente] = useState("");
+  const [fechaVencimiento, setFechaVencimiento] = useState("");
 
   // Manejar la selección de productos y sus cantidades
   const handleProductoChange = (index, field, value) => {
@@ -39,12 +50,14 @@ export default function OtrosCamposFactura({ onChange, productos, clientes }) {
 
   // Eliminar un producto del formulario
   const eliminarProducto = (index) => {
-    const nuevosProductos = productosSeleccionados.filter((_, i) => i !== index);
+    const nuevosProductos = productosSeleccionados.filter(
+      (_, i) => i !== index
+    );
     setProductosSeleccionados(nuevosProductos);
     onChange("productos", nuevosProductos); // Actualizar el estado en el componente padre
   };
 
-  // Manejar cambios en los demás campos (NCF, Gasto de envío, Medio de pago, Cliente)
+  // Manejar cambios en los demás campos (NCF, Gasto de envío, Medio de pago, Cliente, Fecha Vencimiento)
   const handleChange = (name, value) => {
     if (name === "cliente") {
       setCliente(value);
@@ -54,6 +67,8 @@ export default function OtrosCamposFactura({ onChange, productos, clientes }) {
       setGastoEnvio(value);
     } else if (name === "medioPago") {
       setMedioPago(value);
+    } else if (name === "fechaVencimiento") {
+      setFechaVencimiento(value);
     }
     onChange(name, value); // Pasar los cambios al componente padre
   };
@@ -77,12 +92,17 @@ export default function OtrosCamposFactura({ onChange, productos, clientes }) {
 
       {/* Select de productos */}
       {productosSeleccionados.map((producto, index) => (
-        <div key={index} style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+        <div
+          key={index}
+          style={{ display: "flex", gap: "10px", alignItems: "center" }}
+        >
           <FormControl fullWidth>
             <InputLabel>Producto</InputLabel>
             <Select
               value={producto.producto}
-              onChange={(e) => handleProductoChange(index, "producto", e.target.value)}
+              onChange={(e) =>
+                handleProductoChange(index, "producto", e.target.value)
+              }
             >
               {productos.map((p) => (
                 <MenuItem key={p.id} value={p.nombre}>
@@ -96,7 +116,9 @@ export default function OtrosCamposFactura({ onChange, productos, clientes }) {
             label="Cantidad"
             type="number"
             value={producto.cantidad}
-            onChange={(e) => handleProductoChange(index, "cantidad", e.target.value)}
+            onChange={(e) =>
+              handleProductoChange(index, "cantidad", e.target.value)
+            }
           />
 
           <TextField
@@ -106,20 +128,25 @@ export default function OtrosCamposFactura({ onChange, productos, clientes }) {
             disabled
           />
 
-          <TextField label="Total" type="number" value={producto.total} disabled />
+          <TextField
+            label="Total"
+            type="number"
+            value={producto.total}
+            disabled
+          />
 
           <Button
             variant="contained"
             color="error"
             onClick={() => eliminarProducto(index)}
           >
-            Eliminar
+            <DeleteIcon />
           </Button>
         </div>
       ))}
 
       {/* Botón para agregar más productos */}
-      <Button variant="contained" color="primary" onClick={agregarProducto}>
+      <Button variant="contained" color="success" onClick={agregarProducto}>
         Agregar Producto
       </Button>
 

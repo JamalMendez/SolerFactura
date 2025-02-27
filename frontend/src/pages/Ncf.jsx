@@ -24,11 +24,16 @@ export default function Ncf() {
   const [isModal, setIsModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [idSeleccionado, setIdSeleccionado] = useState(null);
-  const [insertarLocalStorage, retornarLocalStorage, insertarUltimoId, retornarUltimoId] = UseStorage();
+  const [
+    insertarLocalStorage,
+    retornarLocalStorage,
+    insertarUltimoId,
+    retornarUltimoId,
+  ] = UseStorage();
 
   const nombreTabla = "tablaNcf";
   const [rows, setRows] = useState(retornarLocalStorage(nombreTabla) || []);
-  const [palabraFiltro, setPalabraFiltro] = useState('');
+  const [palabraFiltro, setPalabraFiltro] = useState("");
   const [busqueda, setBusqueda] = useState([]);
   const [tipo, setTipo] = useState("");
   const [secuencia, setSecuencia] = useState("");
@@ -43,7 +48,7 @@ export default function Ncf() {
     setMensajeAlerta,
     isModalConfirmacion,
     setIsModalConfirmacion,
-    cancelarEliminacion
+    cancelarEliminacion,
   ] = useModal();
 
   function showModal(id) {
@@ -88,12 +93,12 @@ export default function Ncf() {
             tipo,
             secuencia,
             serie,
-            activo: true ? '✅' : '❌',
+            activo: true ? "✅" : "❌",
             fechadecreacion: fechaCreacion,
           },
           ...rows,
         ];
-        localStorage.setItem('secuencial', JSON.stringify(secuencia));
+        localStorage.setItem("secuencial", JSON.stringify(secuencia));
         insertarLocalStorage(nombreTabla, nuevasRows);
         insertarUltimoId(nombreTabla, id + 1);
         return nuevasRows;
@@ -120,7 +125,7 @@ export default function Ncf() {
   }
 
   function generarSecuencia() {
-    let tomarUltimoSecuencial = JSON.parse(localStorage.getItem('secuencial'));
+    let tomarUltimoSecuencial = JSON.parse(localStorage.getItem("secuencial"));
 
     // SI NO HAY UN SECUENCIAL
     if (!tomarUltimoSecuencial) {
@@ -131,7 +136,10 @@ export default function Ncf() {
 
     // SI HAY SECUENCIAL
     const numeros = String(Number(tomarUltimoSecuencial) + 1);
-    const secuencialActualizado = numeros.padStart(tomarUltimoSecuencial.length, '0');
+    const secuencialActualizado = numeros.padStart(
+      tomarUltimoSecuencial.length,
+      "0"
+    );
 
     setSecuencia(secuencialActualizado); // Solo muestra, no guarda en localStorage
   }
@@ -156,11 +164,11 @@ export default function Ncf() {
   function filtrarTabla(palabraBusqueda) {
     setPalabraFiltro(palabraBusqueda);
 
-    if (palabraBusqueda === '') {
+    if (palabraBusqueda === "") {
       setBusqueda([]);
     } else {
-      const filtro = rows.filter(row =>
-        Object.values(row).some(elemento =>
+      const filtro = rows.filter((row) =>
+        Object.values(row).some((elemento) =>
           String(elemento).toLowerCase().includes(palabraBusqueda.toLowerCase())
         )
       );
@@ -187,8 +195,12 @@ export default function Ncf() {
           onShowModal={showModal}
         />
         {busqueda.length === 0 && palabraFiltro.length > 0 ? (
-          <h1 style={{ textAlign: 'center', marginTop: '30px' }}>No hay datos de búsqueda</h1>
-        ) : ''}
+          <h1 style={{ textAlign: "center", marginTop: "30px" }}>
+            No hay datos de búsqueda
+          </h1>
+        ) : (
+          ""
+        )}
       </main>
 
       {/* MODAL AGREGAR*/}

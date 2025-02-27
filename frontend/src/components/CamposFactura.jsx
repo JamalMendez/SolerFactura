@@ -6,11 +6,10 @@ export default function CamposFactura({
   descripcion,
   precioUnitario,
   total,
-  onChange
+  onChange,
 }) {
   return (
     <div className="textfields-container">
-
       <FormControl>
         <label>Fecha Vencimiento:</label>
         <TextField

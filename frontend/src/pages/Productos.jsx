@@ -16,24 +16,29 @@ export default function Productos() {
   const [isModal, setIsModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [idSeleccionado, setIdSeleccionado] = useState(null);
-  const [insertarLocalStorage, retornarLocalStorage, insertarUltimoId, retornarUltimoId] = UseStorage();
+  const [
+    insertarLocalStorage,
+    retornarLocalStorage,
+    insertarUltimoId,
+    retornarUltimoId,
+  ] = UseStorage();
 
-  const nombreTabla = "tablaProductos"; 
+  const nombreTabla = "tablaProductos";
   const [rows, setRows] = useState(retornarLocalStorage(nombreTabla) || []);
-  const [palabraFiltro, setPalabraFiltro] = useState(''); 
-  const [busqueda, setBusqueda] = useState([]); 
+  const [palabraFiltro, setPalabraFiltro] = useState("");
+  const [busqueda, setBusqueda] = useState([]);
   const [nombre, setNombre] = useState("");
   const [costo, setCosto] = useState("");
   const [tipoProducto, setTipoProducto] = useState("");
   const [opcionesTipoProducto, setOpcionesTipoProducto] = useState(
-    retornarLocalStorage('opcionesTipoProducto') || [
+    retornarLocalStorage("opcionesTipoProducto") || [
       { nombre: "eléctrico" },
       { nombre: "mecánico" },
       { nombre: "digital" },
     ]
   );
 
-  const [id, setId] = useState(retornarUltimoId(nombreTabla)); 
+  const [id, setId] = useState(retornarUltimoId(nombreTabla));
 
   const [
     isError,
@@ -72,15 +77,16 @@ export default function Productos() {
       return;
     }
 
-    const todosTiposDiferentes = opcionesTipoProducto.every(producto => producto.nombre !== tipoProducto);
+    const todosTiposDiferentes = opcionesTipoProducto.every(
+      (producto) => producto.nombre !== tipoProducto
+    );
 
-    if(todosTiposDiferentes){
-      setOpcionesTipoProducto((productos) =>{
-        const opciones = [...productos, {nombre: tipoProducto}];
-        insertarLocalStorage('opcionesTipoProducto', opciones)
+    if (todosTiposDiferentes) {
+      setOpcionesTipoProducto((productos) => {
+        const opciones = [...productos, { nombre: tipoProducto }];
+        insertarLocalStorage("opcionesTipoProducto", opciones);
         return opciones;
-        }
-      )
+      });
     }
 
     setIsModal(false);
@@ -100,7 +106,7 @@ export default function Productos() {
           ...rows,
         ];
         insertarLocalStorage(nombreTabla, nuevasRows);
-        insertarUltimoId(nombreTabla, id + 1); 
+        insertarUltimoId(nombreTabla, id + 1);
         return nuevasRows;
       });
       setId((id) => id + 1);
@@ -141,28 +147,28 @@ export default function Productos() {
   }
 
   function filtrarTabla(palabraBusqueda) {
-    setPalabraFiltro(palabraBusqueda); 
+    setPalabraFiltro(palabraBusqueda);
 
-    if (palabraBusqueda === '') {
-      setBusqueda([]); 
+    if (palabraBusqueda === "") {
+      setBusqueda([]);
     } else {
-      const filtro = rows.filter(row =>
-        Object.values(row).some(elemento =>
+      const filtro = rows.filter((row) =>
+        Object.values(row).some((elemento) =>
           String(elemento).toLowerCase().includes(palabraBusqueda.toLowerCase())
         )
       );
-      setBusqueda(filtro); 
+      setBusqueda(filtro);
     }
   }
 
-  function eliminarTipoProducto(index){
+  function eliminarTipoProducto(index) {
     const listaActualizada = opcionesTipoProducto.filter((_, i) => i !== index);
     setOpcionesTipoProducto(listaActualizada);
-    insertarLocalStorage('opcionesTipoProducto', listaActualizada);
+    insertarLocalStorage("opcionesTipoProducto", listaActualizada);
 
     setTimeout(() => {
-      setTipoProducto('')
-    }, .2);
+      setTipoProducto("");
+    }, 0.2);
   }
 
   return (
@@ -179,13 +185,17 @@ export default function Productos() {
       <main>
         <Table
           columnas={columnas}
-          data={palabraFiltro.length > 0 ? busqueda : rows} 
+          data={palabraFiltro.length > 0 ? busqueda : rows}
           setIsModalConfirmacion={setIsModalConfirmacion}
           onShowModal={showModal}
         />
         {busqueda.length === 0 && palabraFiltro.length > 0 ? (
-          <h1 style={{ textAlign: 'center', marginTop: '30px' }}>No hay datos de búsqueda</h1>
-        ) : ''}
+          <h1 style={{ textAlign: "center", marginTop: "30px" }}>
+            No hay datos de búsqueda
+          </h1>
+        ) : (
+          ""
+        )}
       </main>
 
       {/* MODAL AGREGAR*/}

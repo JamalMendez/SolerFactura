@@ -2,7 +2,12 @@ import Button from "@mui/material/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 
-export default function ActionButtons({index, row, onShowModal, setIsModalConfirmacion}) {
+export default function ActionButtons({
+  index,
+  row,
+  onShowModal,
+  setIsModalConfirmacion,
+}) {
   return (
     <div>
       <Button

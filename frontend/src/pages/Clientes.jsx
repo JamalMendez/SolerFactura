@@ -2,7 +2,7 @@ import "../styles/Clientes.css";
 import Table from "../components/Table";
 import HeaderGroup from "../components/HeaderGroup";
 import Modal from "../components/Modal";
-import UseStorage from '../hooks/UseStorage';
+import UseStorage from "../hooks/UseStorage";
 import { Button } from "@mui/material";
 import { useState } from "react";
 import Alert from "@mui/joy/Alert";
@@ -10,7 +10,14 @@ import CamposClientes from "../components/CamposClientes";
 import ModalConfirmacion from "../components/ModalConfirmacion";
 import useModal from "../hooks/UseModal";
 
-const columnas = ["Cedula", "Nombre", "E-mail", "Direccion", "Telefono", "Celular"];
+const columnas = [
+  "Cedula",
+  "Nombre",
+  "E-mail",
+  "Direccion",
+  "Telefono",
+  "Celular",
+];
 const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
 
 export default function Clientes() {
@@ -18,17 +25,17 @@ export default function Clientes() {
     insertarLocalStorage,
     retornarLocalStorage,
     insertarUltimoId,
-    retornarUltimoId
+    retornarUltimoId,
   ] = UseStorage();
 
-  const nombreTabla = "tablaClientes"; 
+  const nombreTabla = "tablaClientes";
   const [isModal, setIsModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [idSeleccionado, setIdSeleccionado] = useState(null);
 
   const [rows, setRows] = useState(retornarLocalStorage(nombreTabla) || []);
-  const [palabraFiltro, setPalabraFiltro] = useState(''); 
-  const [busqueda, setBusqueda] = useState([]); 
+  const [palabraFiltro, setPalabraFiltro] = useState("");
+  const [busqueda, setBusqueda] = useState([]);
   const [cedula, setCedula] = useState("");
   const [nombre, setNombre] = useState("");
   const [email, setEmail] = useState("");
@@ -45,7 +52,7 @@ export default function Clientes() {
     setMensajeAlerta,
     isModalConfirmacion,
     setIsModalConfirmacion,
-    cancelarEliminacion
+    cancelarEliminacion,
   ] = useModal();
 
   function showModal(id) {
@@ -111,7 +118,6 @@ export default function Clientes() {
         return nuevasRows;
       });
       setId((id) => id + 1);
-      
     } else {
       setRows((rows) => {
         const nuevasRows = rows.map((row, i) =>
@@ -155,17 +161,17 @@ export default function Clientes() {
   }
 
   function filtrarTabla(palabraBusqueda) {
-    setPalabraFiltro(palabraBusqueda); 
+    setPalabraFiltro(palabraBusqueda);
 
-    if (palabraBusqueda === '') {
+    if (palabraBusqueda === "") {
       setBusqueda([]);
     } else {
-      const filtro = rows.filter(row =>
-        Object.values(row).some(elemento =>
+      const filtro = rows.filter((row) =>
+        Object.values(row).some((elemento) =>
           String(elemento).toLowerCase().includes(palabraBusqueda.toLowerCase())
         )
       );
-      setBusqueda(filtro); 
+      setBusqueda(filtro);
     }
   }
 
@@ -173,19 +179,27 @@ export default function Clientes() {
     <div className="clientes-container">
       <header className="clientes-header">
         <h1 className="clientes-title">Clientes</h1>
-        <HeaderGroup onFiltrarTabla={filtrarTabla} nombreBtn={"Clientes"} onShowModal={showModal} />
+        <HeaderGroup
+          onFiltrarTabla={filtrarTabla}
+          nombreBtn={"Clientes"}
+          onShowModal={showModal}
+        />
       </header>
 
       <main>
         <Table
           columnas={columnas}
-          data={palabraFiltro.length > 0 ? busqueda : rows} 
+          data={palabraFiltro.length > 0 ? busqueda : rows}
           setIsModalConfirmacion={setIsModalConfirmacion}
           onShowModal={showModal}
         />
         {busqueda.length === 0 && palabraFiltro.length > 0 ? (
-          <h1 style={{ textAlign: 'center', marginTop: '30px' }}>No hay datos de búsqueda</h1>
-        ) : ''}
+          <h1 style={{ textAlign: "center", marginTop: "30px" }}>
+            No hay datos de búsqueda
+          </h1>
+        ) : (
+          ""
+        )}
       </main>
 
       {/* MODAL AGREGAR*/}
