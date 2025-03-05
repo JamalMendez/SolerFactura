@@ -26,7 +26,7 @@ export default function ColumnGroupingTable({
       minWidth: i === 0 ? 40 : 100,
       align: "left",
     })),
-    { id: "acciones", label: "Acciones", minWidth: 70, align: "center" },
+    columnas.some(e => e === 'Secuencia') ? '' : { id: "acciones", label: "Acciones", minWidth: 70, align: "center" } 
   ];
 
   const [page, setPage] = React.useState(0);
@@ -72,14 +72,13 @@ export default function ColumnGroupingTable({
                     if (column.id === "acciones") {
                       return (
                         <TableCell key={column.id} align={column.align}>
-
                           {/* EDITAR Y ELIMINAR BUTTONS */}
                           <ActionButtons index={index} row={row} onShowModal={onShowModal} setIsModalConfirmacion={setIsModalConfirmacion}/>
                         </TableCell>
                       );
                     }
                     const value =
-                      row[column.id] !== undefined ? row[column.id] : "N/A";
+                      row[column.id] !== undefined ? row[column.id] : "";
                     return (
                       <TableCell style={{whiteSpace: "nowrap",overflow: "hidden", textOverflow: 'ellipsis', maxWidth: '45px'}} key={column.id} align={column.align}>
                         {value}

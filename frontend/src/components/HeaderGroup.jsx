@@ -15,7 +15,9 @@ export default function HeaderGroup({ onFiltrarTabla, nombreBtn, onShowModal }) 
         onChange={e => onFiltrarTabla(e.target.value)}
       />
 
-      <Button
+      {
+        nombreBtn ? 
+        <Button
         size="medium"
         color="success"
         variant="contained"
@@ -23,6 +25,9 @@ export default function HeaderGroup({ onFiltrarTabla, nombreBtn, onShowModal }) 
       >
         Agregar {nombreBtn}
       </Button>
+        :
+        ''
+      }
     </div>
   );
 }

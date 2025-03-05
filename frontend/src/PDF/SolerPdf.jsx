@@ -94,7 +94,8 @@ const obtenerFechaActual = () => {
 const MyDocument = ({
   datosFactura,
   clienteSeleccionado,
-  fechaVencimiento,
+  subtotal,
+  total,
 }) => {
   const fechaActual = obtenerFechaActual(); // Obtener la fecha actual
 
@@ -129,13 +130,21 @@ const MyDocument = ({
             </View>
 
             <View style={{ gap: "12px", marginRight: "20px" }}>
-              <Text style={{textDecoration: "underline"}}></Text>
-              <Text style={{textDecoration: "underline"}}></Text>
-              <Text style={{textDecoration: "underline"}}></Text>
-              <Text style={{textDecoration: "underline"}}>{clienteSeleccionado?.nombre || "_____________"}</Text>
-              <Text style={{textDecoration: "underline"}}>{clienteSeleccionado?.direccion || "_____________"}</Text>
-              <Text style={{textDecoration: "underline"}}>{clienteSeleccionado?.ciudad || "_____________"}</Text>
-              <Text style={{textDecoration: "underline"}}>{clienteSeleccionado?.telefono || "_____________"}</Text>
+              <Text style={{ textDecoration: "underline" }}></Text>
+              <Text style={{ textDecoration: "underline" }}></Text>
+              <Text style={{ textDecoration: "underline" }}></Text>
+              <Text style={{ textDecoration: "underline" }}>
+                {clienteSeleccionado?.nombre || "_____________"}
+              </Text>
+              <Text style={{ textDecoration: "underline" }}>
+                {clienteSeleccionado?.direccion || "_____________"}
+              </Text>
+              <Text style={{ textDecoration: "underline" }}>
+                {clienteSeleccionado?.ciudad || "_____________"}
+              </Text>
+              <Text style={{ textDecoration: "underline" }}>
+                {clienteSeleccionado?.telefono || "_____________"}
+              </Text>
             </View>
           </View>
 
@@ -155,9 +164,9 @@ const MyDocument = ({
               <Text></Text>
               <Text></Text>
               <Text></Text>
-              <Text style={{textDecoration: "underline"}}>{fechaActual}</Text>
+              <Text style={{ textDecoration: "underline" }}>{fechaActual}</Text>
               <Text>_____________________</Text>
-              <Text>{fechaVencimiento || "_____________"}</Text>
+              <Text>_____________</Text>
             </View>
           </View>
         </View>
@@ -181,8 +190,12 @@ const MyDocument = ({
             <View key={index} style={styles.row}>
               <Text style={styles.cell}>{producto.cantidad}</Text>
               <Text style={styles.cell}>{producto.producto}</Text>
-              <Text style={styles.cell}>RD${producto.precioUnitario}</Text>
-              <Text style={styles.cell}>RD${producto.total}</Text>
+              <Text style={styles.cell}>
+                RD${Number(producto.precioUnitario || 0).toFixed(2)}
+              </Text>
+              <Text style={styles.cell}>
+                RD${Number(producto.total || 0).toFixed(2)}
+              </Text>
             </View>
           ))}
         </View>
@@ -192,24 +205,28 @@ const MyDocument = ({
           <Text style={[styles.cell, { fontWeight: "bold" }]}>
             Medio de pago
           </Text>
-          <Text style={styles.cell}>_____________</Text>
+          <Text style={styles.cell}>{datosFactura.medioPago || "_____________"}</Text>
           <Text style={[styles.cell, { fontWeight: "bold" }]}>Impuestos</Text>
           <Text style={[styles.cell, { fontWeight: "bold" }]}>Subtotal</Text>
-          <Text style={styles.cell}>RD$0.00</Text>
+          <Text style={styles.cell}>RD${Number(subtotal || 0).toFixed(2)}</Text>
         </View>
         <View style={[styles.row, { width: "90vw" }]}>
           <Text style={styles.cell}></Text>
           <Text style={styles.cell}></Text>
           <Text style={styles.cell}></Text>
           <Text style={[styles.cell, { fontWeight: "bold" }]}>Envío</Text>
-          <Text style={styles.cell}>RD$0.00</Text>
+          <Text style={styles.cell}>
+            RD${Number(datosFactura.gastoEnvio || 0).toFixed(2)}
+          </Text>
         </View>
         <View style={[styles.row, { width: "90vw" }]}>
           <Text style={styles.cell}></Text>
           <Text style={styles.cell}></Text>
           <Text style={styles.cell}></Text>
           <Text style={[styles.cell, { fontWeight: "bold" }]}>TOTAL</Text>
-          <Text style={styles.cell}>RD$0.00</Text>
+          <Text style={styles.cell}>
+            RD${Number(total || 0).toFixed(2)}
+          </Text>
         </View>
 
         {/* COMENTARIOS */}

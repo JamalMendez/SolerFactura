@@ -178,9 +178,8 @@ export default function Ncf() {
   return (
     <div className="factura-container">
       <header className="factura-header">
-        <h1 className="factura-title">NCF</h1>
+        <h1 className="factura-title">Historial NCF</h1>
         <HeaderGroup
-          nombreBtn={"NCF"}
           onShowModal={showModal}
           onFiltrarTabla={filtrarTabla}
         />
@@ -201,44 +200,6 @@ export default function Ncf() {
           ""
         )}
       </main>
-
-      {/* MODAL AGREGAR*/}
-      {isModal && (
-        <Modal setIsModal={setIsModal} modalNombre="Ncf">
-          {mensajeAlerta && (
-            <div>
-              <Alert color="danger">{mensajeAlerta}</Alert>
-            </div>
-          )}
-
-          <CamposNcf
-            tipo={tipo}
-            secuencia={secuencia}
-            serie={serie}
-            setTipo={setTipo}
-            setSecuencia={setSecuencia}
-            setSerie={setSerie}
-          />
-          <Button
-            className="factura-button"
-            variant="contained"
-            color={isEditing ? "warning" : "success"}
-            onClick={validarInformacion}
-          >
-            {isEditing ? "Editar NCF" : "Agregar NCF"}
-          </Button>
-        </Modal>
-      )}
-
-      {/*MODAL CONFIRMACION DE ELIMINAR */}
-      {isModalConfirmacion.active && (
-        <ModalConfirmacion
-          onEliminarElemento={eliminarElemento}
-          setIsModalConfirmacion={setIsModalConfirmacion}
-          id={isModalConfirmacion.id}
-          onCancelar={cancelarEliminacion}
-        />
-      )}
     </div>
   );
 }

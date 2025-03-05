@@ -16,12 +16,12 @@ export default function CreacionFactura() {
   // Estado para los datos de la factura
   const [datosFactura, setDatosFactura] = useState({
     descripcion: "",
-    precioUnitario: "",
-    total: "",
+    precioUnitario: 0,
+    total: 0,
     cliente: "Cliente 1",
     productos: [], // Array de productos seleccionados
     ncf: "NCF 1",
-    gastoEnvio: "",
+    gastoEnvio: 0, // Cambiado a número
     medioPago: "",
   });
 
@@ -45,10 +45,26 @@ export default function CreacionFactura() {
     }));
   };
 
+  // Calcular el subtotal (suma de los totales de los productos)
+  const calcularSubtotal = () => {
+    return datosFactura.productos.reduce((acc, producto) => acc + producto.total, 0);
+  };
+
+  // Calcular el total (subtotal + gasto de envío)
+  const calcularTotal = () => {
+    const subtotal = calcularSubtotal();
+    return Number(subtotal) + Number((datosFactura.gastoEnvio || 0));
+  };
+
   // Función para generar el PDF
   const generarPDF = async () => {
     const blob = await pdf(
-      <MyDocument datosFactura={datosFactura} clienteSeleccionado={clienteSeleccionado} />
+      <MyDocument
+        datosFactura={datosFactura}
+        clienteSeleccionado={clienteSeleccionado}
+        subtotal={calcularSubtotal()}
+        total={calcularTotal()}
+      />
     ).toBlob();
     const pdfUrl = URL.createObjectURL(blob);
     iframeRef.current.src = pdfUrl;
@@ -83,7 +99,13 @@ export default function CreacionFactura() {
           />
 
           <div style={{ marginTop: "20px" }}>
-            <Button color="success" variant="contained">
+            <Button
+              onClick={() => {
+                generarPDF();
+              }}
+              color="success"
+              variant="contained"
+            >
               Generar Factura
             </Button>
           </div>
