@@ -16,6 +16,8 @@ const style = {
   boxShadow: 24,
   p: 4,
   zIndex: 2000,
+  maxHeight: '500px',
+  overflowY: 'scroll'
 };
 
 export default function BasicModal({ setIsModal, children, modalNombre }) {

@@ -10,7 +10,7 @@ import ModalConfirmacion from "../components/ModalConfirmacion";
 import Alert from "@mui/joy/Alert";
 import UseStorage from "../hooks/UseStorage";
 
-const columnas = ["Tipo", "Secuencia", "Serie", "Activo", "Fecha De Creacion"];
+const columnas = ["Tipo", "Secuencia", "Serie", "Fecha De Creacion"];
 
 const date = new Date();
 const day = String(date.getDate()).padStart(2, "0");
@@ -93,7 +93,6 @@ export default function Ncf() {
             tipo,
             secuencia,
             serie,
-            activo: true ? "✅" : "❌",
             fechadecreacion: fechaCreacion,
           },
           ...rows,

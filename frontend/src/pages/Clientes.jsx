@@ -15,6 +15,7 @@ const columnas = [
   "Nombre",
   "E-mail",
   "Direccion",
+  "Ciudad",
   "Telefono",
   "Celular",
 ];
@@ -42,6 +43,7 @@ export default function Clientes() {
   const [direccion, setDireccion] = useState("");
   const [telefono, setTelefono] = useState("");
   const [celular, setCelular] = useState("");
+  const [ciudad, setCiudad] = useState("");
 
   const [id, setId] = useState(retornarUltimoId(nombreTabla)); // Inicializa el ID desde el localStorage
 
@@ -60,6 +62,7 @@ export default function Clientes() {
     setNombre("");
     setEmail("");
     setDireccion("");
+    setCiudad("");
     setTelefono("");
     setCelular("");
     setIsModal(true);
@@ -73,7 +76,7 @@ export default function Clientes() {
   }
 
   function validarInformacion() {
-    if ([cedula, nombre, email, direccion, telefono, celular].includes("")) {
+    if ([cedula, nombre, email, direccion, telefono, celular, ciudad].includes("")) {
       setMensajeAlerta("Campos no pueden ir vacios");
       setIsError(true);
       return;
@@ -91,11 +94,18 @@ export default function Clientes() {
       return;
     }
 
+    if (telefono.toString().length !== 10 || celular.toString().length !== 10) {
+      setMensajeAlerta("Telefono/Celular invalido");
+      setIsError(true);
+      return;
+    }
+
     setIsModal(false);
     setCedula("");
     setNombre("");
     setEmail("");
     setDireccion("");
+    setCiudad("");
     setTelefono("");
     setCelular("");
 
@@ -108,6 +118,7 @@ export default function Clientes() {
             nombre,
             email,
             direccion,
+            ciudad,
             telefono,
             celular,
           },
@@ -128,6 +139,7 @@ export default function Clientes() {
                 nombre,
                 email,
                 direccion,
+                ciudad,
                 telefono,
                 celular,
               }
@@ -155,6 +167,7 @@ export default function Clientes() {
       setNombre(fila.nombre);
       setEmail(fila.email);
       setDireccion(fila.direccion);
+      setCiudad(fila.ciudad);
       setTelefono(fila.telefono);
       setCelular(fila.celular);
     }
@@ -224,6 +237,8 @@ export default function Clientes() {
             setTelefono={setTelefono}
             celular={celular}
             setCelular={setCelular}
+            ciudad={ciudad}
+            setCiudad={setCiudad}
           />
           <Button
             className="clientes-button"

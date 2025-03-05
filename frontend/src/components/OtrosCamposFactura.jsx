@@ -173,7 +173,7 @@ export default function OtrosCamposFactura({ onChange, productos, clientes }) {
 
       {/* Campo Medio de pago */}
       <TextField
-        label="Medio de pago (opcional)"
+        label="Medio de pago"
         value={medioPago}
         onChange={(e) => handleChange("medioPago", e.target.value)}
       />

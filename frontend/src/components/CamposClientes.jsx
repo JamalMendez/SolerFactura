@@ -13,6 +13,8 @@ export default function CamposClientes({
   setTelefono,
   celular,
   setCelular,
+  ciudad,
+  setCiudad
 }) {
   return (
     <div className="textfields-container">
@@ -45,6 +47,14 @@ export default function CamposClientes({
         type="text"
         value={direccion}
         onChange={(e) => setDireccion(e.target.value)}
+        fullWidth
+      />
+
+      <TextField
+        label="Ciudad"
+        type="text"
+        value={ciudad}
+        onChange={(e) => setCiudad(e.target.value)}
         fullWidth
       />
 

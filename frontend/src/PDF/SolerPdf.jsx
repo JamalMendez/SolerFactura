@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     width: "90vw",
     height: "180px",
     border: "2px solid black",
-    marginTop: "50px",
+    marginTop: "40px",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -181,8 +181,8 @@ const MyDocument = ({
             <View key={index} style={styles.row}>
               <Text style={styles.cell}>{producto.cantidad}</Text>
               <Text style={styles.cell}>{producto.producto}</Text>
-              <Text style={styles.cell}>{producto.precioUnitario}</Text>
-              <Text style={styles.cell}>{producto.total}</Text>
+              <Text style={styles.cell}>RD${producto.precioUnitario}</Text>
+              <Text style={styles.cell}>RD${producto.total}</Text>
             </View>
           ))}
         </View>
