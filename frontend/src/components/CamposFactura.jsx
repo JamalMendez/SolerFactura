@@ -10,13 +10,7 @@ export default function CamposFactura({
 }) {
   return (
     <div className="textfields-container">
-      <FormControl>
-        <label>Fecha Vencimiento:</label>
-        <TextField
-          type="date"
-          onChange={(e) => onChange("descripcion", e.target.value)}
-        />
-      </FormControl>
+      
     </div>
   );
 }

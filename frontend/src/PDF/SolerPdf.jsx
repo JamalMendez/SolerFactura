@@ -96,6 +96,7 @@ const MyDocument = ({
   clienteSeleccionado,
   subtotal,
   total,
+  fechaVencimiento
 }) => {
   const fechaActual = obtenerFechaActual(); // Obtener la fecha actual
 
@@ -166,7 +167,7 @@ const MyDocument = ({
               <Text></Text>
               <Text style={{ textDecoration: "underline" }}>{fechaActual}</Text>
               <Text>_____________________</Text>
-              <Text>_____________</Text>
+              <Text style={{ textDecoration: "underline" }}>{fechaVencimiento ? fechaVencimiento : '____________'}</Text>
             </View>
           </View>
         </View>
@@ -246,10 +247,10 @@ const MyDocument = ({
           </View>
 
           <View style={{ gap: "12px", marginRight: "5px" }}>
-            <Text>____________________________</Text>
-            <Text>____________________________</Text>
-            <Text>____________________________</Text>
-            <Text>____________________________</Text>
+            <Text>_______________________</Text>
+            <Text>_______________________</Text>
+            <Text>_______________________</Text>
+            <Text>_______________________</Text>
           </View>
         </View>
 

@@ -23,6 +23,7 @@ export default function CreacionFactura() {
     ncf: "NCF 1",
     gastoEnvio: 0, // Cambiado a número
     medioPago: "",
+    fechaVencimiento: ""
   });
 
   // Estado para el cliente seleccionado
@@ -64,6 +65,7 @@ export default function CreacionFactura() {
         clienteSeleccionado={clienteSeleccionado}
         subtotal={calcularSubtotal()}
         total={calcularTotal()}
+        fechaVencimiento={datosFactura.fechaVencimiento} 
       />
     ).toBlob();
     const pdfUrl = URL.createObjectURL(blob);
@@ -98,7 +100,7 @@ export default function CreacionFactura() {
             onChange={handleChange}
           />
 
-          <div style={{ marginTop: "20px" }}>
+          <div style={{ marginTop: "10px", marginBottom: "20px" }}>
             <Button
               onClick={() => {
                 generarPDF();

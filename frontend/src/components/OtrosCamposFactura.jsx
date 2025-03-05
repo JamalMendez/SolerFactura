@@ -196,11 +196,20 @@ export default function OtrosCamposFactura({ onChange, productos, clientes }) {
         </FormControl>
       </div>
       <TextField
-          label="Secuencial"
-          value={secuencialNcf}
-          type="text"
-          onChange={(e) => setSecuencialNcf(e.target.value)}
+        label="Secuencial"
+        value={secuencialNcf}
+        type="text"
+        onChange={(e) => setSecuencialNcf(e.target.value)}
+      />
+
+      {/* FECHA DE VENCIMIENTO */}
+      <FormControl>
+        <label>Fecha Vencimiento:</label>
+        <TextField
+          type="date"
+          onChange={(e) => handleChange("fechaVencimiento", e.target.value)}
         />
+      </FormControl>
 
       {/* Campo Gasto de envío */}
       <TextField
