@@ -18,17 +18,16 @@ export default function OtrosCamposFactura({ onChange, productos, clientes }) {
   const [cliente, setCliente] = useState("");
   const [fechaVencimiento, setFechaVencimiento] = useState("");
 
-  // Estados para el NCF
+  // NFC
   const [tipoNcf, setTipoNcf] = useState("01");
   const [serieNcf, setSerieNcf] = useState("A");
   const [secuencialNcf, setSecuencialNcf] = useState("00000001");
 
-  // Manejar la selección de productos y sus cantidades
+  // SELECCION DE PRODUCTOS
   const handleProductoChange = (index, field, value) => {
     const nuevosProductos = [...productosSeleccionados];
     nuevosProductos[index][field] = value;
 
-    // Calcular el total si se cambia la cantidad o el producto
     if (field === "cantidad" || field === "producto") {
       const productoSeleccionado = productos.find(
         (p) => p.nombre === nuevosProductos[index].producto
@@ -44,7 +43,7 @@ export default function OtrosCamposFactura({ onChange, productos, clientes }) {
     onChange("productos", nuevosProductos); // Pasar los productos seleccionados al componente padre
   };
 
-  // Agregar un nuevo producto al formulario
+  // AGREGAR PRODUCTOS
   const agregarProducto = () => {
     setProductosSeleccionados([
       ...productosSeleccionados,
@@ -52,7 +51,7 @@ export default function OtrosCamposFactura({ onChange, productos, clientes }) {
     ]);
   };
 
-  // Eliminar un producto del formulario
+  // ELIMINAR PRODUCTOS
   const eliminarProducto = (index) => {
     const nuevosProductos = productosSeleccionados.filter(
       (_, i) => i !== index

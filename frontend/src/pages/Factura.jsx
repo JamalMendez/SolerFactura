@@ -5,7 +5,6 @@ import Modal from "../components/Modal";
 import { Button } from "@mui/material";
 import { useState } from "react";
 import Alert from "@mui/joy/Alert";
-import CamposFactura from "../components/CamposFactura";
 import ModalConfirmacion from "../components/ModalConfirmacion";
 import useModal from "../hooks/UseModal";
 import UseStorage from "../hooks/UseStorage";
@@ -186,14 +185,6 @@ export default function Factura() {
             </div>
           )}
 
-          <CamposFactura
-            nombre={nombre}
-            setNombre={setNombre}
-            descripcion={descripcion}
-            setDescripcion={setDescripcion}
-            fechaVencimiento={fechaVencimiento}
-            setFechaVencimiento={setFechaVencimiento}
-          />
           <Button
             className="factura-button"
             variant="contained"

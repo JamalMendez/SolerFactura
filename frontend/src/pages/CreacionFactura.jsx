@@ -1,5 +1,4 @@
 import React, { useRef, useState, useEffect } from "react";
-import CamposFactura from "../components/CamposFactura";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
 import OtrosCamposFactura from "../components/OtrosCamposFactura";
@@ -92,12 +91,6 @@ export default function CreacionFactura() {
             onChange={handleChange}
             clientes={clientes}
             productos={productos}
-          />
-          <CamposFactura
-            descripcion={datosFactura.descripcion}
-            precioUnitario={datosFactura.precioUnitario}
-            total={datosFactura.total}
-            onChange={handleChange}
           />
 
           <div style={{ marginTop: "10px", marginBottom: "20px" }}>

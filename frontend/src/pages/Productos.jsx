@@ -1,10 +1,10 @@
 import "../styles/Productos.css";
-import Table from "../components/Table";
-import HeaderGroup from "../components/HeaderGroup";
-import Modal from "../components/Modal";
 import { useState } from "react";
 import { Button } from "@mui/material";
 import Alert from "@mui/joy/Alert";
+import Table from "../components/Table";
+import HeaderGroup from "../components/HeaderGroup";
+import Modal from "../components/Modal";
 import CamposProductos from "../components/CamposProductos";
 import ModalConfirmacion from "../components/ModalConfirmacion";
 import useModal from "../hooks/UseModal";
@@ -50,10 +50,8 @@ export default function Productos() {
     cancelarEliminacion,
   ] = useModal();
 
-  function showModal(id) {
-    setNombre("");
-    setCosto("");
-    setTipoProducto("");
+  const handleShowModal = (id) => {
+    limpiarCampos();
     setIsModal(true);
     setIsEditing(false);
 
@@ -62,9 +60,15 @@ export default function Productos() {
       setIsEditing(true);
       editarFila(id);
     }
-  }
+  };
 
-  function validarInformacion() {
+  const limpiarCampos = () => {
+    setNombre("");
+    setCosto("");
+    setTipoProducto("");
+  };
+
+  const handleValidarInformacion = () => {
     if ([nombre, costo, tipoProducto].includes("")) {
       setMensajeAlerta("Campos no pueden ir vacíos");
       setIsError(true);
@@ -77,76 +81,84 @@ export default function Productos() {
       return;
     }
 
-    const todosTiposDiferentes = opcionesTipoProducto.every(
-      (producto) => producto.nombre !== tipoProducto
-    );
-
-    if (todosTiposDiferentes) {
+    if (!isTipoProductoExistente()) {
       setOpcionesTipoProducto((productos) => {
-        const opciones = [...productos, { nombre: tipoProducto }];
-        insertarLocalStorage("opcionesTipoProducto", opciones);
-        return opciones;
+        const nuevasOpciones = [...productos, { nombre: tipoProducto }];
+        insertarLocalStorage("opcionesTipoProducto", nuevasOpciones);
+        return nuevasOpciones;
       });
     }
 
     setIsModal(false);
-    setNombre("");
-    setCosto("");
-    setTipoProducto("");
+    limpiarCampos();
 
     if (!isEditing) {
-      setRows((rows) => {
-        const nuevasRows = [
-          {
-            id,
-            nombre,
-            costo,
-            tipodeproducto: tipoProducto,
-          },
-          ...rows,
-        ];
-        insertarLocalStorage(nombreTabla, nuevasRows);
-        insertarUltimoId(nombreTabla, id + 1);
-        return nuevasRows;
-      });
-      setId((id) => id + 1);
+      agregarProducto();
     } else {
-      setRows((rows) => {
-        const nuevasRows = rows.map((row, i) =>
-          i === idSeleccionado
-            ? {
-                ...row,
-                nombre,
-                costo,
-                tipodeproducto: tipoProducto,
-              }
-            : row
-        );
-        insertarLocalStorage(nombreTabla, nuevasRows);
-        return nuevasRows;
-      });
-      setIsEditing(false);
+      editarProducto();
     }
-  }
+  };
 
-  function eliminarElemento(id) {
+  const isTipoProductoExistente = () => {
+    return opcionesTipoProducto.some(
+      (producto) => producto.nombre === tipoProducto
+    );
+  };
+
+  const agregarProducto = () => {
+    setRows((rows) => {
+      const nuevasRows = [
+        {
+          id,
+          nombre,
+          costo,
+          tipodeproducto: tipoProducto,
+        },
+        ...rows,
+      ];
+      insertarLocalStorage(nombreTabla, nuevasRows);
+      insertarUltimoId(nombreTabla, id + 1);
+      return nuevasRows;
+    });
+    setId((id) => id + 1);
+  };
+
+  const editarProducto = () => {
+    setRows((rows) => {
+      const nuevasRows = rows.map((row, i) =>
+        row.id === idSeleccionado
+          ? {
+              ...row,
+              nombre,
+              costo,
+              tipodeproducto: tipoProducto,
+            }
+          : row
+      );
+      insertarLocalStorage(nombreTabla, nuevasRows);
+      return nuevasRows;
+    });
+    setIsEditing(false);
+  };
+
+  const eliminarElemento = (id) => {
     setRows((rows) => {
       const nuevasRows = rows.filter((row) => row.id !== id);
       insertarLocalStorage(nombreTabla, nuevasRows);
       return nuevasRows;
     });
-  }
+  };
 
-  function editarFila(id) {
-    const fila = rows.find((row, i) => i === id);
+  const editarFila = (id) => {
+    const fila = rows.find((row, i) => row.id === id);
     if (fila) {
       setNombre(fila.nombre);
       setCosto(fila.costo);
       setTipoProducto(fila.tipodeproducto);
     }
-  }
+  };
 
-  function filtrarTabla(palabraBusqueda) {
+  const filtrarTabla = (palabraBusqueda) => {
     setPalabraFiltro(palabraBusqueda);
 
     if (palabraBusqueda === "") {
@@ -159,9 +171,9 @@ export default function Productos() {
       );
       setBusqueda(filtro);
     }
-  }
+  };
 
-  function eliminarTipoProducto(index) {
+  const eliminarTipoProducto = (index) => {
     const listaActualizada = opcionesTipoProducto.filter((_, i) => i !== index);
     setOpcionesTipoProducto(listaActualizada);
     insertarLocalStorage("opcionesTipoProducto", listaActualizada);
@@ -169,7 +181,7 @@ export default function Productos() {
     setTimeout(() => {
       setTipoProducto("");
     }, 0.2);
-  }
+  };
 
   return (
     <div className="productos-container">
@@ -177,7 +189,7 @@ export default function Productos() {
         <h1 className="productos-title">Productos</h1>
         <HeaderGroup
           nombreBtn={"Productos"}
-          onShowModal={showModal}
+          onShowModal={handleShowModal}
           onFiltrarTabla={filtrarTabla}
         />
       </header>
@@ -187,7 +199,7 @@ export default function Productos() {
           columnas={columnas}
           data={palabraFiltro.length > 0 ? busqueda : rows}
           setIsModalConfirmacion={setIsModalConfirmacion}
-          onShowModal={showModal}
+          onShowModal={handleShowModal}
         />
         {busqueda.length === 0 && palabraFiltro.length > 0 ? (
           <h1 style={{ textAlign: "center", marginTop: "30px" }}>
@@ -221,7 +233,7 @@ export default function Productos() {
             className="productos-button"
             variant="contained"
             color={isEditing ? "warning" : "success"}
-            onClick={validarInformacion}
+            onClick={handleValidarInformacion}
           >
             {isEditing ? "Editar Producto" : "Agregar Producto"}
           </Button>

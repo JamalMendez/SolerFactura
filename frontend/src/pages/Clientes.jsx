@@ -58,13 +58,7 @@ export default function Clientes() {
   ] = useModal();
 
   function showModal(id) {
-    setCedula("");
-    setNombre("");
-    setEmail("");
-    setDireccion("");
-    setCiudad("");
-    setTelefono("");
-    setCelular("");
+    limpiarCampos();
     setIsModal(true);
     setIsEditing(false);
 
@@ -76,31 +70,68 @@ export default function Clientes() {
   }
 
   function validarInformacion() {
-    if ([cedula, nombre, email, direccion, telefono, celular, ciudad].includes("")) {
-      setMensajeAlerta("Campos no pueden ir vacios");
-      setIsError(true);
+    if (
+      camposVacios() ||
+      !validarFormatoEmail() ||
+      !validarCedula() ||
+      !validarTelefonos()
+    ) {
       return;
     }
+    procesarDatos();
+  }
 
+  function camposVacios() {
+    if (
+      [cedula, nombre, email, direccion, telefono, celular, ciudad].includes("")
+    ) {
+      mostrarError("Campos no pueden ir vacíos");
+      return true;
+    }
+    return false;
+  }
+
+  function validarFormatoEmail() {
     if (!regex.test(email)) {
-      setMensajeAlerta("Email invalido");
-      setIsError(true);
-      return;
+      mostrarError("Email inválido");
+      return false;
     }
+    return true;
+  }
 
+  function validarCedula() {
     if (cedula.length !== 11) {
-      setMensajeAlerta("Cedula invalida");
-      setIsError(true);
-      return;
+      mostrarError("Cédula inválida");
+      return false;
     }
+    return true;
+  }
 
-    if (telefono.toString().length !== 10 || celular.toString().length !== 10) {
-      setMensajeAlerta("Telefono/Celular invalido");
-      setIsError(true);
-      return;
+  function validarTelefonos() {
+    if (telefono.length !== 10 || celular.length !== 10) {
+      mostrarError("Teléfono/Celular inválido");
+      return false;
     }
+    return true;
+  }
 
+  function mostrarError(mensaje) {
+    setMensajeAlerta(mensaje);
+    setIsError(true);
+  }
+
+  function procesarDatos() {
     setIsModal(false);
+    limpiarCampos();
+
+    if (!isEditing) {
+      agregarCliente();
+    } else {
+      actualizarCliente();
+    }
+  }
+
+  function limpiarCampos() {
     setCedula("");
     setNombre("");
     setEmail("");
@@ -108,48 +139,41 @@ export default function Clientes() {
     setCiudad("");
     setTelefono("");
     setCelular("");
+  }
 
-    if (!isEditing) {
-      setRows((rows) => {
-        const nuevasRows = [
-          {
-            id,
-            cedula,
-            nombre,
-            email,
-            direccion,
-            ciudad,
-            telefono,
-            celular,
-          },
-          ...rows,
-        ];
-        insertarLocalStorage(nombreTabla, nuevasRows); // Guarda el nuevo array
-        insertarUltimoId(nombreTabla, id + 1); // Guarda el próximo ID para esta tabla
-        return nuevasRows;
-      });
-      setId((id) => id + 1);
-    } else {
-      setRows((rows) => {
-        const nuevasRows = rows.map((row, i) =>
-          i === idSeleccionado
-            ? {
-                ...row,
-                cedula,
-                nombre,
-                email,
-                direccion,
-                ciudad,
-                telefono,
-                celular,
-              }
-            : row
-        );
-        insertarLocalStorage(nombreTabla, nuevasRows); // Guarda el array actualizado
-        return nuevasRows;
-      });
-      setIsEditing(false);
-    }
+  function agregarCliente() {
+    setRows((rows) => {
+      const nuevasRows = [
+        { id, cedula, nombre, email, direccion, ciudad, telefono, celular },
+        ...rows,
+      ];
+      insertarLocalStorage(nombreTabla, nuevasRows);
+      insertarUltimoId(nombreTabla, id + 1);
+      return nuevasRows;
+    });
+    setId((id) => id + 1);
+  }
+
+  function actualizarCliente() {
+    setRows((rows) => {
+      const nuevasRows = rows.map((row) =>
+        row.id === idSeleccionado
+          ? {
+              ...row,
+              cedula,
+              nombre,
+              email,
+              direccion,
+              ciudad,
+              telefono,
+              celular,
+            }
+          : row
+      );
+      insertarLocalStorage(nombreTabla, nuevasRows);
+      return nuevasRows;
+    });
+    setIsEditing(false);
   }
 
   function eliminarElemento(id) {
@@ -161,7 +185,7 @@ export default function Clientes() {
   }
 
   function editarFila(id) {
-    const fila = rows.find((row, i) => i === id);
+    const fila = rows.find((row) => row.id === id);
     if (fila) {
       setCedula(fila.cedula);
       setNombre(fila.nombre);
@@ -239,6 +263,7 @@ export default function Clientes() {
             setCelular={setCelular}
             ciudad={ciudad}
             setCiudad={setCiudad}
+            mensajeAlerta={mensajeAlerta}
           />
           <Button
             className="clientes-button"

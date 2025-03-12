@@ -1,13 +1,7 @@
 import "../styles/Ncf.css";
 import Table from "../components/Table";
 import HeaderGroup from "../components/HeaderGroup";
-import Modal from "../components/Modal";
 import { useState } from "react";
-import CamposNcf from "../components/CamposNcf";
-import { Button } from "@mui/material";
-import useModal from "../hooks/UseModal";
-import ModalConfirmacion from "../components/ModalConfirmacion";
-import Alert from "@mui/joy/Alert";
 import UseStorage from "../hooks/UseStorage";
 
 const columnas = ["Tipo", "Secuencia", "Serie", "Fecha De Creacion"];
@@ -35,130 +29,7 @@ export default function Ncf() {
   const [rows, setRows] = useState(retornarLocalStorage(nombreTabla) || []);
   const [palabraFiltro, setPalabraFiltro] = useState("");
   const [busqueda, setBusqueda] = useState([]);
-  const [tipo, setTipo] = useState("");
-  const [secuencia, setSecuencia] = useState("");
-  const [serie, setSerie] = useState("");
-
   const [id, setId] = useState(retornarUltimoId(nombreTabla));
-
-  const [
-    isError,
-    setIsError,
-    mensajeAlerta,
-    setMensajeAlerta,
-    isModalConfirmacion,
-    setIsModalConfirmacion,
-    cancelarEliminacion,
-  ] = useModal();
-
-  function showModal(id) {
-    setIsModal(true);
-    setTipo("");
-    setSecuencia("");
-    setSerie("");
-    setIsEditing(false);
-
-    if (typeof id === "number" && !isNaN(id)) {
-      setIdSeleccionado(id);
-      setIsEditing(true);
-      editarFila(id);
-    } else {
-      generarSecuencia();
-    }
-  }
-
-  function validarInformacion() {
-    if ([tipo, secuencia, serie].includes("")) {
-      setMensajeAlerta("Campos no pueden ir vacios");
-      setIsError(true);
-      return;
-    }
-
-    if (!regex.test(secuencia)) {
-      setMensajeAlerta("Secuencial no valido");
-      setIsError(true);
-      return;
-    }
-
-    setIsModal(false);
-    setTipo("");
-    setSecuencia("");
-    setSerie("");
-
-    if (!isEditing) {
-      setRows((rows) => {
-        const nuevasRows = [
-          {
-            id,
-            tipo,
-            secuencia,
-            serie,
-            fechadecreacion: fechaCreacion,
-          },
-          ...rows,
-        ];
-        localStorage.setItem("secuencial", JSON.stringify(secuencia));
-        insertarLocalStorage(nombreTabla, nuevasRows);
-        insertarUltimoId(nombreTabla, id + 1);
-        return nuevasRows;
-      });
-      setId((id) => id + 1);
-    } else {
-      setRows((rows) => {
-        const nuevasRows = rows.map((row, i) =>
-          i === idSeleccionado
-            ? {
-                ...row,
-                tipo,
-                secuencia,
-                serie,
-                fechacreacion: fechaCreacion,
-              }
-            : row
-        );
-        insertarLocalStorage(nombreTabla, nuevasRows);
-        return nuevasRows;
-      });
-      setIsEditing(false);
-    }
-  }
-
-  function generarSecuencia() {
-    let tomarUltimoSecuencial = JSON.parse(localStorage.getItem("secuencial"));
-
-    // SI NO HAY UN SECUENCIAL
-    if (!tomarUltimoSecuencial) {
-      const nuevoSecuencial = "00000001";
-      setSecuencia(nuevoSecuencial); // Solo muestra, no guarda en localStorage
-      return;
-    }
-
-    // SI HAY SECUENCIAL
-    const numeros = String(Number(tomarUltimoSecuencial) + 1);
-    const secuencialActualizado = numeros.padStart(
-      tomarUltimoSecuencial.length,
-      "0"
-    );
-
-    setSecuencia(secuencialActualizado); // Solo muestra, no guarda en localStorage
-  }
-
-  function eliminarElemento(id) {
-    setRows((rows) => {
-      const nuevasRows = rows.filter((row) => row.id !== id);
-      insertarLocalStorage(nombreTabla, nuevasRows);
-      return nuevasRows;
-    });
-  }
-
-  function editarFila(id) {
-    const fila = rows.find((row, i) => i === id);
-    if (fila) {
-      setTipo(fila.tipo);
-      setSecuencia(fila.secuencia);
-      setSerie(fila.serie);
-    }
-  }
 
   function filtrarTabla(palabraBusqueda) {
     setPalabraFiltro(palabraBusqueda);
@@ -180,7 +51,6 @@ export default function Ncf() {
       <header className="factura-header">
         <h1 className="factura-title">Historial NCF</h1>
         <HeaderGroup
-          onShowModal={showModal}
           onFiltrarTabla={filtrarTabla}
         />
       </header>
@@ -189,8 +59,6 @@ export default function Ncf() {
         <Table
           columnas={columnas}
           data={palabraFiltro.length > 0 ? busqueda : rows}
-          setIsModalConfirmacion={setIsModalConfirmacion}
-          onShowModal={showModal}
         />
         {busqueda.length === 0 && palabraFiltro.length > 0 ? (
           <h1 style={{ textAlign: "center", marginTop: "30px" }}>

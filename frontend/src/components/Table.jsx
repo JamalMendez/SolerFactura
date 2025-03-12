@@ -73,7 +73,7 @@ export default function ColumnGroupingTable({
                       return (
                         <TableCell key={column.id} align={column.align}>
                           {/* EDITAR Y ELIMINAR BUTTONS */}
-                          <ActionButtons index={index} row={row} onShowModal={onShowModal} setIsModalConfirmacion={setIsModalConfirmacion}/>
+                          <ActionButtons index={index} row={row} onShowModal={() => onShowModal(row.id)} setIsModalConfirmacion={setIsModalConfirmacion}/>
                         </TableCell>
                       );
                     }
