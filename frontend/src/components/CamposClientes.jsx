@@ -15,7 +15,6 @@ export default function CamposClientes({
   setCelular,
   ciudad,
   setCiudad,
-  mensajeError
 }) {
   return (
     <div className="textfields-container">
@@ -36,8 +35,6 @@ export default function CamposClientes({
       />
 
       <TextField
-        error
-        helperText={mensajeError ? mensajeError : ''}
         label="Email"
         type="email"
         value={email}

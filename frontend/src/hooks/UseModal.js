@@ -14,7 +14,7 @@ export default function useModal(){
           const timer = setTimeout(() => {
             setMensajeAlerta("");
             setIsError(false);
-          }, 3000);
+          }, 2000);
           return () => clearTimeout(timer);
         }
       }, [isError]);

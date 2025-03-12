@@ -241,9 +241,9 @@ export default function Clientes() {
 
       {/* MODAL AGREGAR*/}
       {isModal && (
-        <Modal setIsModal={setIsModal} modalNombre="Clientes">
+        <Modal setIsModal={setIsModal} mensajeAlerta={mensajeAlerta} modalNombre="Clientes">
           {mensajeAlerta && (
-            <div>
+            <div className="alert">
               <Alert color="danger">{mensajeAlerta}</Alert>
             </div>
           )}

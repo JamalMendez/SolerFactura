@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
-import OtrosCamposFactura from "../components/OtrosCamposFactura";
+import OtrosCamposFactura from "../components/CamposFactura";
 import "../styles/CreacionFactura.css";
 import { pdf } from "@react-pdf/renderer";
 import MyDocument from "../PDF/SolerPdf";
