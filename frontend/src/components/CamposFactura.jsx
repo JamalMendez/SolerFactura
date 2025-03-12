@@ -11,7 +11,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 
 export default function OtrosCamposFactura({ onChange, productos, clientes }) {
   const [productosSeleccionados, setProductosSeleccionados] = useState([
-    { producto: "", cantidad: 1, precioUnitario: 0, total: 0 },
+    { producto: "", cantidad: 1, precioUnitario: 0 },
   ]);
   const [gastoEnvio, setGastoEnvio] = useState("");
   const [medioPago, setMedioPago] = useState("");
@@ -47,7 +47,7 @@ export default function OtrosCamposFactura({ onChange, productos, clientes }) {
   const agregarProducto = () => {
     setProductosSeleccionados([
       ...productosSeleccionados,
-      { producto: "", cantidad: 1, precioUnitario: 0, total: 0 },
+      { producto: "", cantidad: 1, precioUnitario: 0 },
     ]);
   };
 
@@ -141,13 +141,6 @@ export default function OtrosCamposFactura({ onChange, productos, clientes }) {
             disabled
           />
 
-          <TextField
-            label="Total"
-            type="number"
-            value={producto.total}
-            disabled
-          />
-
           <Button
             variant="contained"
             color="error"
@@ -219,11 +212,18 @@ export default function OtrosCamposFactura({ onChange, productos, clientes }) {
       />
 
       {/* Campo Medio de pago */}
-      <TextField
-        label="Medio de pago"
-        value={medioPago}
-        onChange={(e) => handleChange("medioPago", e.target.value)}
-      />
+      <FormControl>
+        <InputLabel>Medio de pago</InputLabel>
+
+        <Select
+          value={medioPago}
+          onChange={(e) => handleChange("medioPago", e.target.value)}
+        >
+          <MenuItem value="Efectivo">Efectivo</MenuItem>
+          <MenuItem value="Transferencia">Transferencia</MenuItem>
+          <MenuItem value="Tarjeta">Tarjeta</MenuItem>
+        </Select>
+      </FormControl>
     </div>
   );
 }

@@ -1,5 +1,9 @@
 import { TextField } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
 
 export default function CamposProductos({
   nombre,
@@ -29,6 +33,14 @@ export default function CamposProductos({
         onChange={(e) => setCosto(e.target.value)}
         fullWidth
       />
+
+      <FormControl>
+        <InputLabel>Divisa</InputLabel>
+        <Select>
+          <MenuItem value="USD">USD</MenuItem>
+          <MenuItem value="RD$">RD$</MenuItem>
+        </Select>
+      </FormControl>
 
       <Autocomplete
         options={opcionesTipoProducto}

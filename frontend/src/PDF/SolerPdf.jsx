@@ -61,6 +61,15 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: "17px",
   },
+  rectangleComentario: {
+    width: "90vw",
+    height: "180px",
+    border: "2px solid black",
+    marginTop: "10px",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
   rectangle: {
     width: "90vw",
     height: "180px",
@@ -240,17 +249,9 @@ const MyDocument = ({
           }}
         >
           <View style={{ gap: "10px", marginRight: "20px" }}>
-            <Text>Comentarios</Text>
-            <Text>Nombre</Text>
-            <Text>Nº Th. crédito</Text>
-            <Text>Caducidad</Text>
-          </View>
+            <Text>Comentarios:</Text>
 
-          <View style={{ gap: "12px", marginRight: "5px" }}>
-            <Text>_______________________</Text>
-            <Text>_______________________</Text>
-            <Text>_______________________</Text>
-            <Text>_______________________</Text>
+            <View style={styles.rectangleComentario}></View>
           </View>
         </View>
 
