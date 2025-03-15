@@ -77,8 +77,11 @@ export default function ColumnGroupingTable({
                         </TableCell>
                       );
                     }
-                    const value =
-                      row[column.id] !== undefined ? row[column.id] : "";
+                    let value =
+                      row[column.id] !== undefined ? row[column.id] : ""; 
+                    value = column.id === "pesord" ? row["costo"] : value;
+                    value = column.id === "dolaresus" ? row["costoEnDolares"] : value;
+                    console.log(column.id, value);
                     return (
                       <TableCell style={{whiteSpace: "nowrap",overflow: "hidden", textOverflow: 'ellipsis', maxWidth: '45px'}} key={column.id} align={column.align}>
                         {value}

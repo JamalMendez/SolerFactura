@@ -10,7 +10,7 @@ import ModalConfirmacion from "../components/ModalConfirmacion";
 import useModal from "../hooks/UseModal";
 import UseStorage from "../hooks/UseStorage";
 
-const columnas = ["ID", "Nombre", "Costo", "Tipo de producto"];
+const columnas = ["ID", "Nombre", "Peso ($RD)", "Dolares ($US)", "Tipo de producto"];
 
 export default function Productos() {
   const [isModal, setIsModal] = useState(false);
@@ -29,6 +29,7 @@ export default function Productos() {
   const [busqueda, setBusqueda] = useState([]);
   const [nombre, setNombre] = useState("");
   const [costo, setCosto] = useState("");
+  const [costoEnDolares, setCostoEnDolares] = useState("");
   const [tipoProducto, setTipoProducto] = useState("");
   const [opcionesTipoProducto, setOpcionesTipoProducto] = useState(
     retornarLocalStorage("opcionesTipoProducto") || [
@@ -65,6 +66,7 @@ export default function Productos() {
   const limpiarCampos = () => {
     setNombre("");
     setCosto("");
+    setCostoEnDolares("");
     setTipoProducto("");
   };
 
@@ -77,6 +79,12 @@ export default function Productos() {
 
     if (costo <= 0) {
       setMensajeAlerta("Producto no tiene costo");
+      setIsError(true);
+      return;
+    }
+
+    if (costoEnDolares <= 0) {
+      setMensajeAlerta("Producto no tiene costo en dolares");
       setIsError(true);
       return;
     }
@@ -112,6 +120,7 @@ export default function Productos() {
           id,
           nombre,
           costo,
+          costoEnDolares,
           tipodeproducto: tipoProducto,
         },
         ...rows,
@@ -131,6 +140,7 @@ export default function Productos() {
               ...row,
               nombre,
               costo,
+              costoEnDolares,
               tipodeproducto: tipoProducto,
             }
           : row
@@ -154,6 +164,7 @@ export default function Productos() {
     if (fila) {
       setNombre(fila.nombre);
       setCosto(fila.costo);
+      setCostoEnDolares(fila.costoEnDolares);
       setTipoProducto(fila.tipodeproducto);
     }
   };
@@ -224,6 +235,8 @@ export default function Productos() {
             setNombre={setNombre}
             costo={costo}
             setCosto={setCosto}
+            costoEnDolares={costoEnDolares}
+            setCostoEnDolares={setCostoEnDolares}
             tipoProducto={tipoProducto}
             setTipoProducto={setTipoProducto}
             opcionesTipoProducto={opcionesTipoProducto}
