@@ -9,6 +9,8 @@ export default function CamposProductos({
   nombre,
   setNombre,
   costo,
+  costoEnDolares,
+  setCostoEnDolares,
   setCosto,
   tipoProducto,
   setTipoProducto,
@@ -34,13 +36,13 @@ export default function CamposProductos({
         fullWidth
       />
 
-      <FormControl>
-        <InputLabel>Divisa</InputLabel>
-        <Select>
-          <MenuItem value="USD">USD</MenuItem>
-          <MenuItem value="RD$">RD$</MenuItem>
-        </Select>
-      </FormControl>
+      <TextField
+        label="Costo en dolares"
+        type="number"
+        value={costoEnDolares}
+        onChange={(e) => setCostoEnDolares(e.target.value)}
+        fullWidth
+      />
 
       <Autocomplete
         options={opcionesTipoProducto}
