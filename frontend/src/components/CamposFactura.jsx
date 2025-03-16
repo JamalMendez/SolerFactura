@@ -13,13 +13,13 @@ import DeleteIcon from "@mui/icons-material/Delete";
 
 export default function OtrosCamposFactura({ onChange, productos, clientes }) {
   const [productosSeleccionados, setProductosSeleccionados] = useState([
-    { producto: "", cantidad: 1, precioUnitario: 0 },
+    { producto: "", cantidad: 1, precioUnitario: 0, tipoDeMoneda: "RD" },
   ]);
   const [gastoEnvio, setGastoEnvio] = useState("");
   const [medioPago, setMedioPago] = useState("");
   const [cliente, setCliente] = useState("");
   const [fechaVencimiento, setFechaVencimiento] = useState("");
-  const [isChecked, setIsChecked] = useState(false);
+  const [isDolar, setIsDolar] = useState(false);
 
   // NFC
   const [tipoNcf, setTipoNcf] = useState("01");
@@ -33,15 +33,17 @@ export default function OtrosCamposFactura({ onChange, productos, clientes }) {
       if (productInfo) {
         return {
           ...producto,
-          precioUnitario: isChecked ? productInfo.costoEnDolares : productInfo.costo
+          precioUnitario: isDolar ? productInfo.costoEnDolares : productInfo.costo,
+          total: producto.cantidad * (isDolar ? productInfo.costoEnDolares : productInfo.costo),
+          tipoDeMoneda: isDolar ? "USD" : "RD"
         };
       }
-      return producto;
+      return {...producto, precioUnitario: 0, total: 0, tipoDeMoneda: isDolar ? "USD" : "RD"};
     });
     
     setProductosSeleccionados(updatedProducts);
     onChange("productos", updatedProducts);
-  }, [isChecked]);
+  }, [isDolar]);
 
   // SELECCION DE PRODUCTOS
   const handleProductoChange = (index, field, value) => {
@@ -53,7 +55,7 @@ export default function OtrosCamposFactura({ onChange, productos, clientes }) {
         (p) => p.nombre === nuevosProductos[index].producto
       );
       if (productoSeleccionado) {
-        const costo = isChecked ? productoSeleccionado.costoEnDolares : productoSeleccionado.costo;
+        const costo = isDolar ? productoSeleccionado.costoEnDolares : productoSeleccionado.costo;
         nuevosProductos[index].precioUnitario = costo;
         nuevosProductos[index].total = nuevosProductos[index].cantidad * costo;
       }
@@ -128,8 +130,8 @@ export default function OtrosCamposFactura({ onChange, productos, clientes }) {
         control={
           <Checkbox 
             size="large" 
-            checked={isChecked}
-            onChange={(e) => setIsChecked(e.target.checked)}
+            checked={isDolar}
+            onChange={(e) => setIsDolar(e.target.checked)}
           />
         } 
         label="En Dólares" 
@@ -166,7 +168,7 @@ export default function OtrosCamposFactura({ onChange, productos, clientes }) {
           />
 
           <TextField
-            label={isChecked ? "Costo Unitario (USD)" : "Costo Unitario"}
+            label={isDolar ? "Costo Unitario (USD)" : "Costo Unitario"}
             type="number"
             value={producto.precioUnitario}
             disabled
