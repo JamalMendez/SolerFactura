@@ -5,7 +5,7 @@ go 1.22.0
 toolchain go1.22.3
 
 require (
-	github.com/wailsapp/wails/v2 v2.9.3
+	github.com/wailsapp/wails/v2 v2.10.1
 	gorm.io/driver/sqlserver v1.5.4
 	gorm.io/gorm v1.25.12
 )

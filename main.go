@@ -10,7 +10,7 @@ import (
 	"ggstudios.com/solerfactura/dbconnection"
 )
 
-//go:embed all:frontend/dist
+//go:embedall:frontend/dist
 var assets embed.FS
 
 func main() {

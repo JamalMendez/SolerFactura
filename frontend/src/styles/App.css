@@ -1,23 +1,30 @@
-*{
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Corbel';
+    font-family: "Corbel";
 }
 
-:root{
-    --verde-oscuro: #18843A;
-    --verde-claro: #A0C020;
-    --negro: #1E1E1E;
-    --amarillo: #FFD800;
+body,
+html,
+#root,
+.container-app {
+    height: 100%;
 }
 
-div.container-app{
+:root {
+    --verde-oscuro: #18843a;
+    --verde-claro: #a0c020;
+    --negro: #1e1e1e;
+    --amarillo: #ffd800;
+}
+
+div.container-app {
     display: flex;
     background-color: white;
 }
 
-div.container-routes{
+div.container-routes {
     margin-left: 70px;
     margin-top: 30px;
     width: 100%;

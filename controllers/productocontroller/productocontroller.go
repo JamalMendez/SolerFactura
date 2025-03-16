@@ -8,14 +8,15 @@ import (
 )
 
 type ProductoDTO struct {
-	ID           uint
-	TipoProducto uint
-	Descripcion  string
-	Costo        uint
+	ID             uint
+	TipoProducto   uint
+	Descripcion    string
+	Costo          uint
+	CostoEnDolares uint
 }
 
-func Create(descripcion string, costo uint, tpr_id uint) error {
-	producto := dbconnection.Producto{Descripcion: descripcion, Costo: costo, TPR_id: tpr_id}
+func Create(descripcion string, costo, costoEnDolares, tpr_id uint) error {
+	producto := dbconnection.Producto{Descripcion: descripcion, Costo: costo, TPR_id: tpr_id, CostoEnDolares: costoEnDolares}
 
 	result := dbconnection.Db.Create(&producto)
 
@@ -67,7 +68,7 @@ func GetById(id uint) (ProductoDTO, error) {
 	return *producto, nil
 }
 
-func Update(descripcion string, costo, tpr_id, id uint) error {
+func Update(descripcion string, costo, costoEnDolares, tpr_id, id uint) error {
 	producto := new(dbconnection.Producto)
 
 	result := dbconnection.Db.Find(producto, id)
@@ -85,6 +86,7 @@ func Update(descripcion string, costo, tpr_id, id uint) error {
 	}
 
 	producto.Costo = costo
+	producto.CostoEnDolares = costoEnDolares
 	producto.TPR_id = tpr_id
 
 	result = dbconnection.Db.Save(producto)

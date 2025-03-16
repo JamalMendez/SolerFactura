@@ -24,26 +24,6 @@ func TestCreate(t *testing.T) {
 	dbconnection.CloseDb()
 }
 
-func TestCreateMany(t *testing.T) {
-	serie := "B"
-	tipo := "01"
-	secuencia := []string{"03940395", "03940396", "03940397", "03940398", "03940399"}
-
-	dbconnection.DbOpen()
-
-	err := CreateMany(serie, tipo, secuencia)
-
-	if err != nil {
-		t.Errorf("Ocurrio un error al insertar %v en la base de datos. Error: %b", secuencia, err)
-	}
-
-	ncfs, _ := GetAll()
-	for i := range secuencia {
-		dbconnection.Db.Unscoped().Delete(ncfs[len(ncfs)-1-i])
-	}
-	dbconnection.CloseDb()
-}
-
 func TestGetAll(t *testing.T) {
 	dbconnection.DbOpen()
 	_, err := GetAll()

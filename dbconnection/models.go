@@ -8,6 +8,7 @@ type TipoPago struct {
 	gorm.Model
 	Descripcion string    `gorm:"unique;not null;size:100"`
 	Facturas    []Factura `gorm:"foreignKey:TPO_id"`
+	COTs        []COT     `gorm:"foreignKey:TPO_id"`
 }
 
 type TipoProducto struct {
@@ -31,16 +32,19 @@ type Cliente struct {
 	Apellido   string    `gorm:"not null;size:100"`
 	Email      string    `gorm:"unique;size:150"`
 	Direccion  string    `gorm:"size:200"`
+	Ciudad     string    `gorm:"size:200"`
 	Telefono   string    `gorm:"unique;size:10"`
 	Celular    string    `gorm:"unique;size:10"`
 	Facturas   []Factura `gorm:"foreignKey:CLI_id"`
+	COTs       []COT     `gorm:"foreignKey:CLI_id"`
 }
 
 type Producto struct {
 	gorm.Model
-	TPR_id      uint   `gorm:"not null"`
-	Descripcion string `gorm:"unique;not null;size:150"`
-	Costo       uint   `gorm:"not null"`
+	TPR_id         uint   `gorm:"not null"`
+	Descripcion    string `gorm:"unique;not null;size:150"`
+	Costo          uint   `gorm:"not null"`
+	CostoEnDolares uint   `gorm:"not null"`
 }
 
 type Factura struct {
@@ -52,9 +56,9 @@ type Factura struct {
 	CostoSubtotal uint   `gorm:"not null"`
 	CostoTotal    uint   `gorm:"not null"`
 	Descuento     uint
-	ITBIS         uint `gorm:"not null"`
 	Envio         uint
 	Descripcion   string     `gorm:"type:text"`
+	EnDolares     bool       `gorm:"not null;default:false"`
 	Productos     []Producto `gorm:"many2many:factura_descs;"`
 }
 
@@ -62,6 +66,29 @@ type FacturaDesc struct {
 	CostoUnitario uint `gorm:"not null"`
 	Cantidad      uint `gorm:"not null;default:1"`
 	TotalUnitario uint `gorm:"not null"`
+	ITBIS         bool `gorm:"not null";default:true`
+}
+
+type COT struct {
+	gorm.Model
+	Secuencia     uint   `gorm:"not null;unique"`
+	CLI_id        uint   `gorm:"not null"`
+	TPO_id        uint   `gorm:"not null"`
+	Nombre        string `gorm:"unique;size:150"`
+	CostoSubtotal uint   `gorm:"not null"`
+	CostoTotal    uint   `gorm:"not null"`
+	Descuento     uint
+	Envio         uint
+	Descripcion   string     `gorm:"type:text"`
+	EnDolares     bool       `gorm:"not null;default:false"`
+	Productos     []Producto `gorm:"many2many:cot_descs;"`
+}
+
+type COTDesc struct {
+	CostoUnitario uint `gorm:"not null"`
+	Cantidad      uint `gorm:"not null;default:1"`
+	TotalUnitario uint `gorm:"not null"`
+	ITBIS         bool `gorm:"not null";default:true`
 }
 
 func migration(db *gorm.DB) {
@@ -90,6 +117,14 @@ func migration(db *gorm.DB) {
 	}
 
 	if err := db.AutoMigrate(&FacturaDesc{}); err != nil {
+		panic("failed to migrate database: " + err.Error())
+	}
+
+	if err := db.AutoMigrate(&COT{}); err != nil {
+		panic("failed to migrate database: " + err.Error())
+	}
+
+	if err := db.AutoMigrate(&COTDesc{}); err != nil {
 		panic("failed to migrate database: " + err.Error())
 	}
 }

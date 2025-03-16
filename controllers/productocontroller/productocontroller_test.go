@@ -1,8 +1,9 @@
 package productocontroller
 
 import (
-	"ggstudios.com/solerfactura/dbconnection"
 	"testing"
+
+	"ggstudios.com/solerfactura/dbconnection"
 )
 
 func TestCreate(t *testing.T) {
@@ -11,7 +12,7 @@ func TestCreate(t *testing.T) {
 
 	dbconnection.DbOpen()
 
-	err := Create(descripcion, costo, 1)
+	err := Create(descripcion, costo, 1, 1)
 
 	if err != nil {
 		t.Errorf("Ocurrio un error al insertar %v en la base de datos. Error: %b", descripcion, err)
@@ -37,7 +38,7 @@ func TestGetById(t *testing.T) {
 	var costo uint = 4350
 	dbconnection.DbOpen()
 
-	Create(descripcion, costo, 1)
+	Create(descripcion, costo, 1, 1)
 	producto, _ := GetAll()
 	_, err := GetById(producto[len(producto)-1].ID)
 
@@ -57,9 +58,9 @@ func TestUpdate(t *testing.T) {
 	var costo uint = 4350
 	dbconnection.DbOpen()
 
-	Create(descripcion, costo, 1)
+	Create(descripcion, costo, 1, 1)
 	producto, _ := GetAll()
-	err := Update("otro tipo 7", 3452, 2, producto[len(producto)-1].ID)
+	err := Update("otro tipo 7", 3452, 2, 1, producto[len(producto)-1].ID)
 
 	if err != nil {
 		t.Errorf("Ha ocurrido un error al traer o actualizar los datos: %v", err)
@@ -77,7 +78,7 @@ func TestDelete(t *testing.T) {
 	var costo uint = 4350
 	dbconnection.DbOpen()
 
-	Create(descripcion, costo, 1)
+	Create(descripcion, costo, 1, 1)
 	productos, _ := GetAll()
 
 	IDProducto := productos[len(productos)-1].ID

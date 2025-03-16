@@ -11,7 +11,7 @@ import (
 var Db *gorm.DB
 
 func DbOpen() {
-	dsn := "Server=.\\SQLEXPRESS;Initial Catalog=SisFac;Integrated Security=True; TrustServerCertificate=True"
+	dsn := "sqlserver://sa:S4v30n3Story.@localhost:1433?database=SisFac"
 
 	var err error
 	Db, err = gorm.Open(sqlserver.Open(dsn), &gorm.Config{})
