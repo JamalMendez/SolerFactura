@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import {
   TextField,
   Select,
+  Checkbox,
   MenuItem,
   FormControl,
+  FormControlLabel,
   InputLabel,
   Button,
 } from "@mui/material";
@@ -17,11 +19,29 @@ export default function OtrosCamposFactura({ onChange, productos, clientes }) {
   const [medioPago, setMedioPago] = useState("");
   const [cliente, setCliente] = useState("");
   const [fechaVencimiento, setFechaVencimiento] = useState("");
+  const [isChecked, setIsChecked] = useState(false);
 
   // NFC
   const [tipoNcf, setTipoNcf] = useState("01");
   const [serieNcf, setSerieNcf] = useState("A");
   const [secuencialNcf, setSecuencialNcf] = useState("00000001");
+
+  // Update prices when currency changes
+  useEffect(() => {
+    const updatedProducts = productosSeleccionados.map(producto => {
+      const productInfo = productos.find(p => p.nombre === producto.producto);
+      if (productInfo) {
+        return {
+          ...producto,
+          precioUnitario: isChecked ? productInfo.costoEnDolares : productInfo.costo
+        };
+      }
+      return producto;
+    });
+    
+    setProductosSeleccionados(updatedProducts);
+    onChange("productos", updatedProducts);
+  }, [isChecked]);
 
   // SELECCION DE PRODUCTOS
   const handleProductoChange = (index, field, value) => {
@@ -33,14 +53,14 @@ export default function OtrosCamposFactura({ onChange, productos, clientes }) {
         (p) => p.nombre === nuevosProductos[index].producto
       );
       if (productoSeleccionado) {
-        nuevosProductos[index].precioUnitario = productoSeleccionado.costo;
-        nuevosProductos[index].total =
-          nuevosProductos[index].cantidad * productoSeleccionado.costo;
+        const costo = isChecked ? productoSeleccionado.costoEnDolares : productoSeleccionado.costo;
+        nuevosProductos[index].precioUnitario = costo;
+        nuevosProductos[index].total = nuevosProductos[index].cantidad * costo;
       }
     }
 
     setProductosSeleccionados(nuevosProductos);
-    onChange("productos", nuevosProductos); // Pasar los productos seleccionados al componente padre
+    onChange("productos", nuevosProductos);
   };
 
   // AGREGAR PRODUCTOS
@@ -103,7 +123,18 @@ export default function OtrosCamposFactura({ onChange, productos, clientes }) {
         </Select>
       </FormControl>
 
-      {/* Select de productos */}
+      {/* Checkbox para moneda */}
+      <FormControlLabel 
+        control={
+          <Checkbox 
+            size="large" 
+            checked={isChecked}
+            onChange={(e) => setIsChecked(e.target.checked)}
+          />
+        } 
+        label="En Dólares" 
+      />
+
       {productosSeleccionados.map((producto, index) => (
         <div
           key={index}
@@ -135,7 +166,7 @@ export default function OtrosCamposFactura({ onChange, productos, clientes }) {
           />
 
           <TextField
-            label="Precio Unitario"
+            label={isChecked ? "Costo Unitario (USD)" : "Costo Unitario"}
             type="number"
             value={producto.precioUnitario}
             disabled
