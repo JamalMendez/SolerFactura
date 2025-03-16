@@ -201,10 +201,10 @@ const MyDocument = ({
               <Text style={styles.cell}>{producto.cantidad}</Text>
               <Text style={styles.cell}>{producto.producto}</Text>
               <Text style={styles.cell}>
-                RD${Number(producto.precioUnitario || 0).toFixed(2)}
+                {producto.tipoDeMoneda}${Number(producto.precioUnitario || 0).toFixed(2)}
               </Text>
               <Text style={styles.cell}>
-                RD${Number(producto.total || 0).toFixed(2)}
+              {producto.tipoDeMoneda}${Number(producto.total || 0).toFixed(2)}
               </Text>
             </View>
           ))}
@@ -218,7 +218,7 @@ const MyDocument = ({
           <Text style={styles.cell}>{datosFactura.medioPago || "_____________"}</Text>
           <Text style={[styles.cell, { fontWeight: "bold" }]}>Impuestos</Text>
           <Text style={[styles.cell, { fontWeight: "bold" }]}>Subtotal</Text>
-          <Text style={styles.cell}>RD${Number(subtotal || 0).toFixed(2)}</Text>
+          <Text style={styles.cell}>{datosFactura.productos[0].tipoDeMoneda}${Number(subtotal || 0).toFixed(2)}</Text>
         </View>
         <View style={[styles.row, { width: "90vw" }]}>
           <Text style={styles.cell}></Text>
@@ -226,7 +226,7 @@ const MyDocument = ({
           <Text style={styles.cell}></Text>
           <Text style={[styles.cell, { fontWeight: "bold" }]}>Envío</Text>
           <Text style={styles.cell}>
-            RD${Number(datosFactura.gastoEnvio || 0).toFixed(2)}
+            {datosFactura.productos[0].tipoDeMoneda}${Number(datosFactura.gastoEnvio || 0).toFixed(2)}
           </Text>
         </View>
         <View style={[styles.row, { width: "90vw" }]}>
@@ -235,7 +235,7 @@ const MyDocument = ({
           <Text style={styles.cell}></Text>
           <Text style={[styles.cell, { fontWeight: "bold" }]}>TOTAL</Text>
           <Text style={styles.cell}>
-            RD${Number(total || 0).toFixed(2)}
+            {datosFactura.productos[0].tipoDeMoneda}${Number(total || 0).toFixed(2)}
           </Text>
         </View>
 
