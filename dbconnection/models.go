@@ -6,9 +6,9 @@ import (
 
 type TipoPago struct {
 	gorm.Model
-	Descripcion string    `gorm:"unique;not null;size:100"`
-	Facturas    []Factura `gorm:"foreignKey:TPO_id"`
-	COTs        []COT     `gorm:"foreignKey:TPO_id"`
+	Descripcion string       `gorm:"unique;not null;size:100"`
+	Facturas    []Factura    `gorm:"foreignKey:TPO_id"`
+	COTs        []Cotizacion `gorm:"foreignKey:TPO_id"`
 }
 
 type TipoProducto struct {
@@ -27,16 +27,16 @@ type NCF struct {
 
 type Cliente struct {
 	gorm.Model
-	RND_Cedula string    `gorm:"unique;not null;size:11"`
-	Nombre     string    `gorm:"not null;size:100"`
-	Apellido   string    `gorm:"not null;size:100"`
-	Email      string    `gorm:"unique;size:150"`
-	Direccion  string    `gorm:"size:200"`
-	Ciudad     string    `gorm:"size:200"`
-	Telefono   string    `gorm:"unique;size:10"`
-	Celular    string    `gorm:"unique;size:10"`
-	Facturas   []Factura `gorm:"foreignKey:CLI_id"`
-	COTs       []COT     `gorm:"foreignKey:CLI_id"`
+	RND_Cedula string       `gorm:"unique;not null;size:11"`
+	Nombre     string       `gorm:"not null;size:100"`
+	Apellido   string       `gorm:"not null;size:100"`
+	Email      string       `gorm:"unique;size:150"`
+	Direccion  string       `gorm:"size:200"`
+	Ciudad     string       `gorm:"size:200"`
+	Telefono   string       `gorm:"unique;size:10"`
+	Celular    string       `gorm:"unique;size:10"`
+	Facturas   []Factura    `gorm:"foreignKey:CLI_id"`
+	COTs       []Cotizacion `gorm:"foreignKey:CLI_id"`
 }
 
 type Producto struct {
@@ -69,7 +69,7 @@ type FacturaDesc struct {
 	ITBIS         bool `gorm:"not null";default:true`
 }
 
-type COT struct {
+type Cotizacion struct {
 	gorm.Model
 	Secuencia     uint   `gorm:"not null;unique"`
 	CLI_id        uint   `gorm:"not null"`
@@ -120,7 +120,7 @@ func migration(db *gorm.DB) {
 		panic("failed to migrate database: " + err.Error())
 	}
 
-	if err := db.AutoMigrate(&COT{}); err != nil {
+	if err := db.AutoMigrate(&Cotizacion{}); err != nil {
 		panic("failed to migrate database: " + err.Error())
 	}
 
